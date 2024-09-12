@@ -1,7 +1,14 @@
 import { Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import React from "react";
+import React, { useState } from "react";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
+import {
+  Circle,
+  Svg,
+  TextPath,
+  Text as TextSvg,
+  TSpan,
+} from "react-native-svg";
 
 interface RegionCircularProps {
   size: number;
@@ -18,7 +25,10 @@ export default function RegionCircular({
   region,
   containerHeight,
 }: RegionCircularProps) {
+  const radius = size / 2 - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
   const screenSize = useScreenSize();
+  const [labelWidth, setLabelWidth] = useState(0);
 
   return (
     <View
@@ -28,7 +38,6 @@ export default function RegionCircular({
         { left: screenSize.width / 2 - size / 2 },
       ]}
     >
-      {/* <Text className="text-orange-300">{region}</Text> */}
       <AnimatedCircularProgress
         size={size}
         width={strokeWidth}
@@ -40,15 +49,41 @@ export default function RegionCircular({
         renderCap={({ center }) => (
           // {x, y} = {75, 140}
           <View>
-            {/* <Circle cx={center.x} cy={center.y / 2} r="10" fill="blue" /> */}
-            {/* <Text className="text-orange-300">
-              {center.x}, {center.y}
-            </Text> */}
+            {/* <Svg
+              height={size}
+              width={size}
+              style={{ position: "absolute", top: 0, left: 0 }}
+            >
+              <Circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                fill="none"
+                stroke="none"
+                id="circlePath"
+              />
+              <TextSvg fill="white" fontSize="16" fontWeight="light">
+                <TextPath
+                  href="#circlePath"
+                  startOffset="72%"
+                  textAnchor="middle"
+                >
+                  {region}
+                </TextPath>
+              </TextSvg>
+            </Svg> */}
           </View>
         )}
       >
         {(fill) => <Text className="text-orange-300 absolute">{fill}%</Text>}
       </AnimatedCircularProgress>
+      <View
+        className="absolute top-0 left-1/2 "
+        onLayout={(e) => setLabelWidth(e.nativeEvent.layout.width)}
+        style={{ transform: [{ translateX: -(labelWidth / 2) }] }}
+      >
+        <Text className="text-white font-light">{region}</Text>
+      </View>
     </View>
   );
 }

@@ -11,26 +11,26 @@ export default function Clock() {
       className="border-2 border-red-500 w-full relative"
       style={{ height: containerHeight }}
     >
-      <CenterCircle size={150} containerHeight={containerHeight} />
+      {/* <CenterCircle size={150} containerHeight={containerHeight} /> */}
       <RegionCircular
         size={250}
         strokeWidth={20}
         progress={50}
-        region="Japan"
+        region="Tokyo"
         containerHeight={containerHeight}
       />
       <RegionCircular
         size={300}
         strokeWidth={20}
         progress={50}
-        region="Japan"
+        region="BeiJing"
         containerHeight={containerHeight}
       />
       <RegionCircular
         size={350}
         strokeWidth={20}
         progress={50}
-        region="Japan"
+        region="London"
         containerHeight={containerHeight}
       />
       {/* <View className="bg-red-500 -z-10" style={{ height: halfHeight }}></View> */}
