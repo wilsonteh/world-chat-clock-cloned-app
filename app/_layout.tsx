@@ -1,3 +1,4 @@
+import { ScreenSizeProvider } from "@/contexts/ScreenSizeContext";
 import { Stack } from "expo-router";
 import { NativeWindStyleSheet } from "nativewind";
 
@@ -7,8 +8,10 @@ NativeWindStyleSheet.setOutput({
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" />
-    </Stack>
+    <ScreenSizeProvider>
+      <Stack>
+        <Stack.Screen name="index" />
+      </Stack>
+    </ScreenSizeProvider>
   );
 }
