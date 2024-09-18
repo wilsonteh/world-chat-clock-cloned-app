@@ -1,7 +1,5 @@
 import CheckboxList from "@/components/CheckboxList";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Button, View } from "react-native";
+import { Button, View, Modal } from "react-native";
 
 export interface CityCheckboxItem {
   label: string;
@@ -9,34 +7,28 @@ export interface CityCheckboxItem {
   checked: boolean;
 }
 
-export default function CitiesSelectionModal() {
-  const router = useRouter();
-  const [checkboxItems, setCheckboxItems] = useState<CityCheckboxItem[]>([
-    { label: "Tokyo", timezone: "GMT+9", checked: false },
-    { label: "Beijing", timezone: "GMT+8", checked: false },
-    { label: "London", timezone: "GMT+1", checked: false },
-    { label: "Istanbul", timezone: "GMT+3", checked: false },
-  ]);
+interface CitiesSelectionModalProps {
+  isVisible: boolean;
+  checkboxes: CityCheckboxItem[];
+  onCheckboxItemsChange: (items: CityCheckboxItem[]) => void;
+  onModalVisible: (visible: boolean) => void;
+}
 
-  const handleCheckboxItemsChange = (items: CityCheckboxItem[]) => {
-    setCheckboxItems(items);
-  };
-
-  const handleClose = () => {
-    router.back();
-    router.replace({
-      pathname: "/",
-      params: { updatedCities: JSON.stringify(checkboxItems) },
-    });
-  };
-
+export default function CitiesSelectionModal({
+  isVisible,
+  checkboxes,
+  onCheckboxItemsChange,
+  onModalVisible,
+}: CitiesSelectionModalProps) {
   return (
-    <View className="flex-1 flex justify-center items-center mt-4">
-      <CheckboxList
-        items={checkboxItems}
-        onItemsChange={handleCheckboxItemsChange}
-      />
-      <Button title="Confirm" onPress={handleClose} />
-    </View>
+    <Modal visible={isVisible} animationType="slide">
+      <View className="flex-1 flex justify-center items-center mt-4">
+        <CheckboxList
+          items={checkboxes}
+          onItemsChange={onCheckboxItemsChange}
+        />
+        <Button title="Confirm" onPress={() => onModalVisible(false)} />
+      </View>
+    </Modal>
   );
 }
