@@ -1,16 +1,11 @@
 import CheckboxList from "@/components/CheckboxList";
 import { Button, View, Modal } from "react-native";
-
-export interface CityCheckboxItem {
-  label: string;
-  timezone: string;
-  checked: boolean;
-}
+import { City } from ".";
 
 interface CitiesSelectionModalProps {
   isVisible: boolean;
-  checkboxes: CityCheckboxItem[];
-  onCheckboxItemsChange: (items: CityCheckboxItem[]) => void;
+  checkboxes: City[];
+  onCheckboxItemsChange: (items: City[]) => void;
   onModalVisible: (visible: boolean) => void;
 }
 
@@ -22,7 +17,7 @@ export default function CitiesSelectionModal({
 }: CitiesSelectionModalProps) {
   return (
     <Modal visible={isVisible} animationType="slide">
-      <View className="flex-1 flex justify-center items-center mt-4">
+      <View className="flex-1 flex justify-center items-center mt-12 mx-auto">
         <CheckboxList
           items={checkboxes}
           onItemsChange={onCheckboxItemsChange}

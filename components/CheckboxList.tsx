@@ -19,25 +19,23 @@ export default function CheckboxList({
   };
 
   return (
-    <View className="flex-1 w-full">
-      <View className="flex items-center">
-        {items.map((item, i) => (
-          <View
-            key={item.label}
-            className="w-full flex flex-row justify-start items-center"
-          >
-            <Checkbox
-              className="mr-2"
-              value={item.checked}
-              onValueChange={(checked) => handleCheckboxChange(i, checked)}
-            />
-            <Text>
-              <Text className="text-xl">{item.label} </Text>
-              <Text className="text-xs">{item.timezone}</Text>
-            </Text>
-          </View>
-        ))}
-      </View>
+    <View className="flex items-start gap-4">
+      {items.map((item, i) => (
+        <View
+          key={item.label}
+          className="w-full flex flex-row justify-start items-center"
+        >
+          <Checkbox
+            className="mr-2"
+            value={item.checked}
+            onValueChange={(checked) => handleCheckboxChange(i, checked)}
+          />
+          <Text>
+            <Text className="text-xl">{item.label} </Text>
+            <Text className="text-xs">{item.timezone}</Text>
+          </Text>
+        </View>
+      ))}
     </View>
   );
 }

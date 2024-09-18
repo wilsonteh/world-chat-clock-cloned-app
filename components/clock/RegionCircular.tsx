@@ -9,12 +9,14 @@ import {
   Text as TextSvg,
   TSpan,
 } from "react-native-svg";
+import { City } from "@/app";
+import { getCurrentTimeInTimezone } from "@/utils/Utils";
 
 interface RegionCircularProps {
   size: number;
   strokeWidth: number;
   progress: number;
-  region: string;
+  city: City;
   containerHeight: number;
 }
 
@@ -22,7 +24,7 @@ export default function RegionCircular({
   size,
   strokeWidth,
   progress,
-  region,
+  city,
   containerHeight,
 }: RegionCircularProps) {
   const radius = size / 2 - strokeWidth / 2;
@@ -68,7 +70,7 @@ export default function RegionCircular({
                   startOffset="72%"
                   textAnchor="middle"
                 >
-                  {region}
+                  {city.label}
                 </TextPath>
               </TextSvg>
             </Svg> */}
@@ -82,7 +84,9 @@ export default function RegionCircular({
         onLayout={(e) => setLabelWidth(e.nativeEvent.layout.width)}
         style={{ transform: [{ translateX: -(labelWidth / 2) }] }}
       >
-        <Text className="text-white font-light">{region}</Text>
+        <Text className="text-white font-semibold">
+          {city.label} - {getCurrentTimeInTimezone(city.timezone)}
+        </Text>
       </View>
     </View>
   );
