@@ -37,7 +37,7 @@ export default function CircularProgress({
 
   return (
     <View
-      className="absolute border-2 border-slate-400"
+      className="absolute"
       style={[
         { top: containerHeight / 2 - size / 2 },
         { left: screenSize.width / 2 - size / 2 },
@@ -70,8 +70,15 @@ export default function CircularProgress({
           origin={`${size / 2}, ${size / 2}`}
         />
 
-        <TextSvg fill="#fff" fontSize="14">
-          <TextPath href="#bg-circle" startOffset="65%">
+        <TextSvg
+          fill="#fff"
+          fontSize="14"
+          onLayout={(e) => setLabelWidth(e.nativeEvent.layout.width)}
+        >
+          <TextPath
+            href="#bg-circle"
+            startOffset={`${75 - (labelWidth / (2 * circumference)) * 100}%`}
+          >
             <TSpan dy={5}>
               {city.label} - {currentTime}
             </TSpan>
