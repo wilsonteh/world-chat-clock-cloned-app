@@ -1,10 +1,10 @@
 import { View, Text, ScrollView } from "react-native";
 import CenterCircle from "./CenterCircle";
 import CircularProgress from "./CircularProgress";
-import { City } from "@/app";
+import { CityCheckbox } from "@/app";
 
 interface ClockProps {
-  cities: City[];
+  cities: CityCheckbox[];
 }
 
 export default function Clock({ cities }: ClockProps) {

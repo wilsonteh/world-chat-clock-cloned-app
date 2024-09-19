@@ -12,12 +12,12 @@ import {
   Text as TextSvg,
   TSpan,
 } from "react-native-svg";
-import { City } from "@/app";
+import { CityCheckbox } from "@/app";
 import { getCurrentTimeInTimezone } from "@/utils/Utils";
 
 interface RegionCircularProps {
   size: number;
-  city: City;
+  city: CityCheckbox;
   containerHeight: number;
 }
 
@@ -80,7 +80,7 @@ export default function CircularProgress({
             startOffset={`${75 - (labelWidth / (2 * circumference)) * 100}%`}
           >
             <TSpan dy={5}>
-              {city.label} - {currentTime}
+              {city.region} - {currentTime}
             </TSpan>
           </TextPath>
         </TextSvg>
