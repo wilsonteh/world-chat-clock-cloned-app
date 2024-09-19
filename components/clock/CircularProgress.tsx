@@ -80,7 +80,8 @@ export default function CircularProgress({
             startOffset={`${75 - (labelWidth / (2 * circumference)) * 100}%`}
           >
             <TSpan dy={5}>
-              {city.region} - {currentTime}
+              <TSpan fontWeight={300}>{city.region}, </TSpan>
+              <TSpan fontWeight={600}>{city.country}</TSpan> {currentTime}
             </TSpan>
           </TextPath>
         </TextSvg>

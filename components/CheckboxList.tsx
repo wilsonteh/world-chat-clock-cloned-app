@@ -14,6 +14,12 @@ export default function CheckboxList({
   onItemsChange,
 }: CheckboxListProps) {
   const handleCheckboxChange = (index: number, checked: boolean) => {
+    if (checked) {
+      if (items.filter((item) => item.checked).length === 5) {
+        console.log("Max 5 regions allowed");
+        return;
+      }
+    }
     const newItems = items.map((item, i) =>
       i === index ? { ...item, checked } : item
     );
