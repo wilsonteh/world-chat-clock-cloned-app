@@ -32,7 +32,7 @@ export default function CenterCircle({
         r={radius - 4} // Adjust for border width
         stroke="orange"
         strokeWidth={4}
-        fill="slategray"
+        fill="#3d5875"
       />
     </Svg>
   );

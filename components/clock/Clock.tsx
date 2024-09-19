@@ -1,6 +1,6 @@
 import { View, Text, ScrollView } from "react-native";
 import CenterCircle from "./CenterCircle";
-import RegionCircular from "./RegionCircular";
+import CircularProgress from "./CircularProgress";
 import { City } from "@/app";
 
 interface ClockProps {
@@ -14,11 +14,9 @@ export default function Clock({ cities }: ClockProps) {
     <View className="w-full" style={{ height: containerHeight }}>
       <CenterCircle size={150} containerHeight={containerHeight} />
       {cities.map((city, i) => (
-        <RegionCircular
+        <CircularProgress
           key={i}
           size={250 + i * 50}
-          strokeWidth={20}
-          progress={60}
           city={city}
           containerHeight={containerHeight}
         />

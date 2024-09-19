@@ -13,9 +13,9 @@ export default function Index() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cities, setCities] = useState<City[]>([
     { label: "Tokyo", timezone: "GMT+9", checked: false },
-    { label: "Beijing", timezone: "GMT+8", checked: false },
+    { label: "Beijing", timezone: "GMT+8", checked: true },
     { label: "London", timezone: "GMT+1", checked: false },
-    { label: "Istanbul", timezone: "GMT+3", checked: false },
+    { label: "Istanbul", timezone: "GMT+3", checked: true },
   ]);
   const selectedCities = cities.filter((city) => city.checked);
 
