@@ -1,5 +1,4 @@
 import { Text, View } from "react-native";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import React, { useState } from "react";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import {
@@ -13,7 +12,10 @@ import {
   TSpan,
 } from "react-native-svg";
 import { CityCheckbox } from "@/app";
-import { getCurrentTimeInTimezone } from "@/utils/Utils";
+import {
+  getCurrentTimeInTimezone,
+  getGMTOffsetFromTimeZoneName,
+} from "@/utils/Utils";
 
 interface RegionCircularProps {
   size: number;
@@ -26,13 +28,17 @@ export default function CircularProgress({
   city,
   containerHeight,
 }: RegionCircularProps) {
-  const progress = 50;
+  const progress = 4.167;
   const strokeWidth = 20;
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
   const progressOffset = circumference - (progress / 100) * circumference;
   const screenSize = useScreenSize();
   const currentTime = getCurrentTimeInTimezone(city.timezone);
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const userCurrentTime = getCurrentTimeInTimezone(
+    getGMTOffsetFromTimeZoneName(userTimezone)
+  );
   const [labelWidth, setLabelWidth] = useState(0);
 
   return (

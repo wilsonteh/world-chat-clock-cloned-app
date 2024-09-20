@@ -2,6 +2,7 @@ import { View, Text, ScrollView } from "react-native";
 import CenterCircle from "./CenterCircle";
 import CircularProgress from "./CircularProgress";
 import { CityCheckbox } from "@/app";
+import NowPointer from "./NowPointer";
 
 interface ClockProps {
   cities: CityCheckbox[];
@@ -10,9 +11,19 @@ interface ClockProps {
 export default function Clock({ cities }: ClockProps) {
   const containerHeight = 500;
 
+  // const calculateOverlappedOfficeHours = () => {
+  //   cities.map(city => {
+
+  //   })
+  // };
+
   return (
-    <View className="w-full" style={{ height: containerHeight }}>
+    <View
+      className="border-red-500 border w-full"
+      style={{ height: containerHeight }}
+    >
       <CenterCircle size={150} containerHeight={containerHeight} />
+      <NowPointer />
       {cities.map((city, i) => (
         <CircularProgress
           key={i}
