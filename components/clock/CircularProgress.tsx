@@ -13,8 +13,9 @@ import {
 } from "react-native-svg";
 import { CityCheckbox } from "@/app";
 import {
-  getCurrentTimeInTimezone,
-  getGMTOffsetFromTimeZoneName,
+  calculateHoursFrom9AM,
+  getTimeFromGMTOffset,
+  getUserTimezoneInfo,
 } from "@/utils/Utils";
 
 interface RegionCircularProps {
@@ -28,18 +29,21 @@ export default function CircularProgress({
   city,
   containerHeight,
 }: RegionCircularProps) {
-  const progress = 4.167;
+  const [labelWidth, setLabelWidth] = useState(0);
+  const workingHourProgress = (8 / 24) * 100; // working hrs progress
   const strokeWidth = 20;
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
-  const progressOffset = circumference - (progress / 100) * circumference;
   const screenSize = useScreenSize();
-  const currentTime = getCurrentTimeInTimezone(city.timezone);
-  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const userCurrentTime = getCurrentTimeInTimezone(
-    getGMTOffsetFromTimeZoneName(userTimezone)
-  );
-  const [labelWidth, setLabelWidth] = useState(0);
+
+  // To get: the user current time in his timezone & selected city current time
+  const { userNamedTimezone, userCurrentTime } = getUserTimezoneInfo();
+  const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
+
+  const hoursPassed = calculateHoursFrom9AM(cityCurrentTime); // num of working hours past 9 AM based on current time
+  const workingHourRotation = 270 - hoursPassed * 15;
+  const workingHourProgressOffset =
+    circumference - (workingHourProgress / 100) * circumference;
 
   return (
     <View
@@ -60,9 +64,8 @@ export default function CircularProgress({
           fill="none"
         />
 
-        {/* fg circle */}
         <Circle
-          id="fg-circle"
+          id="circle-working-hours"
           cx={size / 2}
           cy={size / 2}
           r={radius}
@@ -70,7 +73,22 @@ export default function CircularProgress({
           fill="none"
           stroke="orange"
           strokeDasharray={circumference}
-          strokeDashoffset={progressOffset}
+          strokeDashoffset={workingHourProgressOffset}
+          strokeLinecap="butt"
+          rotation={workingHourRotation}
+          origin={`${size / 2}, ${size / 2}`}
+        />
+
+        <Circle
+          id="circle-working-hours"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={strokeWidth}
+          fill="none"
+          stroke="cyan"
+          strokeDasharray={circumference}
+          strokeDashoffset={workingHourProgressOffset}
           strokeLinecap="butt"
           rotation={-90}
           origin={`${size / 2}, ${size / 2}`}
@@ -87,7 +105,7 @@ export default function CircularProgress({
           >
             <TSpan dy={5}>
               <TSpan fontWeight={300}>{city.region}, </TSpan>
-              <TSpan fontWeight={600}>{city.country}</TSpan> {currentTime}
+              <TSpan fontWeight={600}>{city.country}</TSpan> {cityCurrentTime}
             </TSpan>
           </TextPath>
         </TextSvg>

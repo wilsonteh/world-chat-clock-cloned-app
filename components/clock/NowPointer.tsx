@@ -9,7 +9,7 @@ export default function NowPointer() {
       >
         now
       </Text>
-      <View className="bg-slate-300 w-[3px] h-[160px] z-10"></View>
+      <View className="bg-slate-300 w-[3px] h-[160px]"></View>
     </View>
   );
 }

@@ -54,7 +54,7 @@ export default function CheckboxList({
             <Text>
               <Text>{item.region}, </Text>
               <Text className="font-semibold">{item.country} </Text>
-              <Text className="text-[10px]">{item.timezone}</Text>
+              <Text className="text-[10px]">{item.gmtOffset}</Text>
             </Text>
           </View>
         ))}
