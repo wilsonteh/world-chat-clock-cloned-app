@@ -31,6 +31,8 @@ export default function CircularProgress({
 }: RegionCircularProps) {
   const [labelWidth, setLabelWidth] = useState(0);
   const workingHourProgress = (8 / 24) * 100; // working hrs progress
+  const extendedHourProgress = (15.5 / 24) * 100; // extended hrs progress
+
   const strokeWidth = 20;
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
@@ -44,6 +46,10 @@ export default function CircularProgress({
   const workingHourRotation = 270 - hoursPassed * 15;
   const workingHourProgressOffset =
     circumference - (workingHourProgress / 100) * circumference;
+
+  const extendedHourRotation = 270 - hoursPassed * 15;
+  const extendedHourProgressOffset =
+    circumference - (extendedHourProgress / 100) * circumference;
 
   return (
     <View
@@ -65,17 +71,17 @@ export default function CircularProgress({
         />
 
         <Circle
-          id="circle-working-hours"
+          id="circle-extended-hours"
           cx={size / 2}
           cy={size / 2}
           r={radius}
           strokeWidth={strokeWidth}
           fill="none"
-          stroke="orange"
+          stroke="#fdba74"
           strokeDasharray={circumference}
-          strokeDashoffset={workingHourProgressOffset}
+          strokeDashoffset={extendedHourProgressOffset}
           strokeLinecap="butt"
-          rotation={workingHourRotation}
+          rotation={extendedHourRotation}
           origin={`${size / 2}, ${size / 2}`}
         />
 
@@ -86,11 +92,11 @@ export default function CircularProgress({
           r={radius}
           strokeWidth={strokeWidth}
           fill="none"
-          stroke="cyan"
+          stroke="#fb923c"
           strokeDasharray={circumference}
           strokeDashoffset={workingHourProgressOffset}
           strokeLinecap="butt"
-          rotation={-90}
+          rotation={workingHourRotation}
           origin={`${size / 2}, ${size / 2}`}
         />
 
