@@ -51,12 +51,13 @@ export const getUserTimezoneInfo = () => {
   };
 };
 
-export const calculateHoursFrom9AM = (time: string) => {
-  const startTime = "9:00am";
-
-  // Parse the start time (9:00 AM) and the input time using moment.js
+export const getTotalHoursBetweenTimes = (
+  startTime: string,
+  endTime: string
+) => {
+  // Parse the start and end times using moment.js
   const start = moment(startTime, "h:mma");
-  const end = moment(time, "h:mma");
+  const end = moment(endTime, "h:mma");
 
   // Validate times
   if (!start.isValid() || !end.isValid()) {
@@ -71,6 +72,7 @@ export const calculateHoursFrom9AM = (time: string) => {
 
   // Convert the total minutes into hours
   const hours = minutes / 60;
+
   return hours;
 };
 

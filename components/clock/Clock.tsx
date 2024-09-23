@@ -3,6 +3,7 @@ import CenterCircle from "./CenterCircle";
 import CircularProgress from "./CircularProgress";
 import { CityCheckbox } from "@/app";
 import NowPointer from "./NowPointer";
+import CircularOverlap from "./CircularOverlap";
 
 interface ClockProps {
   cities: CityCheckbox[];
@@ -10,12 +11,6 @@ interface ClockProps {
 
 export default function Clock({ cities }: ClockProps) {
   const containerHeight = 500;
-
-  // const calculateOverlappedOfficeHours = () => {
-  //   cities.map(city => {
-
-  //   })
-  // };
 
   return (
     <View
@@ -32,6 +27,11 @@ export default function Clock({ cities }: ClockProps) {
           containerHeight={containerHeight}
         />
       ))}
+
+      <CircularOverlap
+        size={250 + cities.length * 50 + 20}
+        containerHeight={containerHeight}
+      />
     </View>
   );
 }

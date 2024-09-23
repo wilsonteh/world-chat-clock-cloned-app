@@ -13,8 +13,8 @@ import {
 } from "react-native-svg";
 import { CityCheckbox } from "@/app";
 import {
-  calculateHoursFrom9AM,
   getTimeFromGMTOffset,
+  getTotalHoursBetweenTimes,
   getUserTimezoneInfo,
 } from "@/utils/Utils";
 
@@ -42,12 +42,19 @@ export default function CircularProgress({
   const { userNamedTimezone, userCurrentTime } = getUserTimezoneInfo();
   const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
 
-  const hoursPassed = calculateHoursFrom9AM(cityCurrentTime); // num of working hours past 9 AM based on current time
-  const workingHourRotation = 270 - hoursPassed * 15;
+  const workingHoursPassed = getTotalHoursBetweenTimes(
+    "9:00am",
+    cityCurrentTime
+  ); // num of working hours past 9 AM based on current time
+  const workingHourRotation = 270 - workingHoursPassed * 15;
   const workingHourProgressOffset =
     circumference - (workingHourProgress / 100) * circumference;
 
-  const extendedHourRotation = 270 - hoursPassed * 15;
+  const extendedHoursPassed = getTotalHoursBetweenTimes(
+    "7:30am",
+    cityCurrentTime
+  ); // num of extended hours past 7:30 AM based on current time
+  const extendedHourRotation = 270 - extendedHoursPassed * 15;
   const extendedHourProgressOffset =
     circumference - (extendedHourProgress / 100) * circumference;
 

@@ -11,7 +11,10 @@ export interface CityCheckbox extends City {
 export default function Index() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cities, setCities] = useState<CityCheckbox[]>(
-    citiesData.map((city) => ({ ...city, checked: false }))
+    citiesData.map((city, i) => ({
+      ...city,
+      checked: ["Bangkok", "Beijing"].includes(city.region) ? true : false,
+    }))
   );
   const selectedCities = cities.filter((city) => city.checked);
 
