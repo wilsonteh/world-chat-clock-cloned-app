@@ -1,7 +1,7 @@
 import Clock from "@/components/clock/Clock";
 import { Pressable, View, Text } from "react-native";
 import CitiesSelectionModal from "./citiesSelectionModal";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cities as citiesData, City } from "@/constants/Cities";
 
 export interface CityCheckbox extends City {
@@ -16,7 +16,15 @@ export default function Index() {
       checked: ["Kuala Lumpur", "Dubai"].includes(city.region) ? true : false,
     }))
   );
+  const [time, setTime] = useState(new Date());
   const selectedCities = cities.filter((city) => city.checked);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View className=" bg-slate-800 flex-1 justify-start items-center">
@@ -35,6 +43,10 @@ export default function Index() {
         onCheckboxItemsChange={setCities}
         onModalVisible={setIsModalVisible}
       />
+
+      <Text className="text-white">
+        User system time: {time.toLocaleTimeString()}{" "}
+      </Text>
     </View>
   );
 }

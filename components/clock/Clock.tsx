@@ -78,10 +78,7 @@ export default function Clock({ cities }: ClockProps) {
   });
 
   return (
-    <View
-      className="border-red-500 border w-full"
-      style={{ height: containerHeight }}
-    >
+    <View className="w-full mt-4" style={{ height: containerHeight }}>
       <CenterCircle size={100} containerHeight={containerHeight} />
       <NowPointer />
       {cities.map((city, i) => (
