@@ -17,22 +17,21 @@ import {
   getTotalHoursBetweenTimes,
   getUserTimezoneInfo,
 } from "@/utils/Utils";
+import { CircularInfo } from "./Clock";
 
 interface RegionCircularProps {
-  size: number;
   city: CityCheckbox;
+  circularInfo: CircularInfo;
   containerHeight: number;
 }
 
 export default function CircularProgress({
-  size,
   city,
+  circularInfo,
   containerHeight,
 }: RegionCircularProps) {
   const [labelWidth, setLabelWidth] = useState(0);
-  const workingHourProgress = (8 / 24) * 100; // working hrs progress
-  const extendedHourProgress = (15.5 / 24) * 100; // extended hrs progress
-
+  const { size, workingHour, extendedHour } = circularInfo;
   const strokeWidth = 20;
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
@@ -41,22 +40,12 @@ export default function CircularProgress({
   // To get: the user current time in his timezone & selected city current time
   const { userNamedTimezone, userCurrentTime } = getUserTimezoneInfo();
   const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
-
-  const workingHoursPassed = getTotalHoursBetweenTimes(
-    "9:00am",
-    cityCurrentTime
-  ); // num of working hours past 9 AM based on current time
-  const workingHourRotation = 270 - workingHoursPassed * 15;
-  const workingHourProgressOffset =
-    circumference - (workingHourProgress / 100) * circumference;
-
-  const extendedHoursPassed = getTotalHoursBetweenTimes(
-    "7:30am",
-    cityCurrentTime
-  ); // num of extended hours past 7:30 AM based on current time
-  const extendedHourRotation = 270 - extendedHoursPassed * 15;
-  const extendedHourProgressOffset =
-    circumference - (extendedHourProgress / 100) * circumference;
+  console.log(
+    "🚀",
+    city.region,
+    circularInfo.workingHour,
+    circularInfo.extendedHour
+  );
 
   return (
     <View
@@ -86,9 +75,9 @@ export default function CircularProgress({
           fill="none"
           stroke="#fdba74"
           strokeDasharray={circumference}
-          strokeDashoffset={extendedHourProgressOffset}
+          strokeDashoffset={extendedHour.progressOffset}
           strokeLinecap="butt"
-          rotation={extendedHourRotation}
+          rotation={extendedHour.rotationStart}
           origin={`${size / 2}, ${size / 2}`}
         />
 
@@ -101,9 +90,9 @@ export default function CircularProgress({
           fill="none"
           stroke="#fb923c"
           strokeDasharray={circumference}
-          strokeDashoffset={workingHourProgressOffset}
+          strokeDashoffset={workingHour.progressOffset}
           strokeLinecap="butt"
-          rotation={workingHourRotation}
+          rotation={workingHour.rotationStart}
           origin={`${size / 2}, ${size / 2}`}
         />
 

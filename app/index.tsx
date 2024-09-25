@@ -13,7 +13,7 @@ export default function Index() {
   const [cities, setCities] = useState<CityCheckbox[]>(
     citiesData.map((city, i) => ({
       ...city,
-      checked: ["Bangkok", "Beijing"].includes(city.region) ? true : false,
+      checked: ["Kuala Lumpur", "Dubai"].includes(city.region) ? true : false,
     }))
   );
   const selectedCities = cities.filter((city) => city.checked);

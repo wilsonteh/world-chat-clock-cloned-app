@@ -11,7 +11,7 @@ export const cities: City[] = [
   { region: "Mexico City", country: "Mexico", gmtOffset: "GMT-6" },
   { region: "New York", country: "USA", gmtOffset: "GMT-5" },
   { region: "Buenos Aires", country: "Argentina", gmtOffset: "GMT-3" },
-  { region: "London", country: "UK", gmtOffset: "GMT+0" },
+  { region: "London", country: "UK", gmtOffset: "GMT+1" },
   { region: "Berlin", country: "Germany", gmtOffset: "GMT+1" },
   { region: "Johannesburg ", country: "South Africa", gmtOffset: "GMT+2" },
   { region: "Dubai", country: "UAE", gmtOffset: "GMT+4" },
