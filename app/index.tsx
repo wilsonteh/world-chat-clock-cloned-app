@@ -3,13 +3,14 @@ import { Pressable, View, Text } from "react-native";
 import CitiesSelectionModal from "./citiesSelectionModal";
 import React, { useEffect, useState } from "react";
 import { cities as citiesData, City } from "@/constants/Cities";
-
+import * as Location from "expo-location";
 export interface CityCheckbox extends City {
   checked: boolean;
 }
 
 export default function Index() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [location, setLocation] = useState<Location.LocationGeocodedAddress | null>(null);
   const [cities, setCities] = useState<CityCheckbox[]>(
     citiesData.map((city, i) => ({
       ...city,
@@ -24,6 +25,19 @@ export default function Index() {
       setTime(new Date());
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { canAskAgain, expires, granted, status, android, ios } = await Location.requestForegroundPermissionsAsync();
+      console.log("🚀 ~ status:", status)
+      if (granted) {
+        const position = await Location.getCurrentPositionAsync();
+        const [address] = await Location.reverseGeocodeAsync(position.coords)
+        setLocation(address);
+      }
+    })();
+
   }, []);
 
   return (
@@ -44,8 +58,9 @@ export default function Index() {
         onModalVisible={setIsModalVisible}
       />
 
-      <Text className="text-white">
-        User system time: {time.toLocaleTimeString()}{" "}
+      <Text className="text-white text-center text-xs">
+        <Text>Time: {time.toLocaleTimeString()} {"\n"}</Text>
+        { location && <Text>Location: {location.city}, {location.region}, {location.country}</Text>}
       </Text>
     </View>
   );
