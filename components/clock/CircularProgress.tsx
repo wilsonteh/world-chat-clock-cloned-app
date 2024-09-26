@@ -40,12 +40,6 @@ export default function CircularProgress({
   // To get: the user current time in his timezone & selected city current time
   const { userNamedTimezone, userCurrentTime } = getUserTimezoneInfo();
   const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
-  console.log(
-    "🚀",
-    city.region,
-    circularInfo.workingHour,
-    circularInfo.extendedHour
-  );
 
   return (
     <View

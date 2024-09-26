@@ -85,7 +85,7 @@ export default function CircularOverlap({
     };
   });
 
-  console.log("🚀 ~ hourOverlapResults", hourOverlapResults);
+  // console.log("🚀 ~ hourOverlapResults", hourOverlapResults);
 
   const workingHourProgressOffset =
     circumference - hourOverlapResults.workingHour.hourProgress * circumference;

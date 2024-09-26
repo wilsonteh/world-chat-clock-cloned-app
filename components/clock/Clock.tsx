@@ -6,7 +6,7 @@ import NowPointer from "./NowPointer";
 import CircularOverlap from "./CircularOverlap";
 import { getTimeFromGMTOffset, getTotalHoursBetweenTimes } from "@/utils/Utils";
 import { cities } from "@/constants/Cities";
-import React from "react";
+import React, { memo, useEffect, useState } from "react";
 
 export interface CircularInfo {
   size: number;
@@ -28,54 +28,70 @@ interface ClockProps {
 
 export default function Clock({ cities }: ClockProps) {
   const containerHeight = 500;
+  const strokeWidth = 20;
+  const [citiesCircularInfo, setCitiesCircularInfo] = useState<CircularInfo[]>(
+    getCitiesCircularInfo()
+  );
 
-  const citiesCircularInfo: CircularInfo[] = cities.map((city, i) => {
-    const strokeWidth = 20;
-    const size = 170 + i * 50;
-    const radius = size / 2 - strokeWidth / 2;
-    const circumference = 2 * Math.PI * radius;
-    const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
+  function getCitiesCircularInfo() {
+    const circularInfo: CircularInfo[] = cities.map((city, i) => {
+      const size = 170 + i * 50;
+      const radius = size / 2 - strokeWidth / 2;
+      const circumference = 2 * Math.PI * radius;
+      const cityCurrentTime = getTimeFromGMTOffset(city.gmtOffset);
 
-    // * WORKING HOUR //
-    const workingHoursPassed = getTotalHoursBetweenTimes(
-      "9:00am",
-      cityCurrentTime
-    ); // num of working hours past 9 AM based on current time
-    const workHourProgress = 8 / 24; // working hrs progress
-    const workHourRotationStart = 270 - workingHoursPassed * 15;
-    const workingHourProgressOffset =
-      circumference - workHourProgress * circumference;
-    // *FIXME - End rotation likely incorrect
-    let workHourRotationEnd = workHourRotationStart + workHourProgress * 360;
-    workHourRotationEnd > 360 && (workHourRotationEnd -= 360);
+      // * WORKING HOUR //
+      const workingHoursPassed = getTotalHoursBetweenTimes(
+        "9:00am",
+        cityCurrentTime
+      ); // num of working hours past 9 AM based on current time
+      const workHourProgress = 8 / 24; // working hrs progress
+      const workHourRotationStart = 270 - workingHoursPassed * 15;
+      const workingHourProgressOffset =
+        circumference - workHourProgress * circumference;
+      // *FIXME - End rotation likely incorrect
+      let workHourRotationEnd = workHourRotationStart + workHourProgress * 360;
+      workHourRotationEnd > 360 && (workHourRotationEnd -= 360);
 
-    // * EXTENDED HOUR //
-    const extendedHoursPassed = getTotalHoursBetweenTimes(
-      "7:30am",
-      cityCurrentTime
-    ); // num of extended hours past 7:30 AM based on current time
-    const extendedHourProgress = 15.5 / 24; // extended hrs progress
-    const extendedHourRotationStart = 270 - extendedHoursPassed * 15;
-    const extendedHourProgressOffset =
-      circumference - extendedHourProgress * circumference;
-    let extendedHourRotationEnd =
-      extendedHourRotationStart + extendedHourProgress * 360;
-    extendedHourRotationEnd > 360 && (extendedHourRotationEnd -= 360);
+      // * EXTENDED HOUR //
+      const extendedHoursPassed = getTotalHoursBetweenTimes(
+        "7:30am",
+        cityCurrentTime
+      ); // num of extended hours past 7:30 AM based on current time
+      const extendedHourProgress = 15.5 / 24; // extended hrs progress
+      const extendedHourRotationStart = 270 - extendedHoursPassed * 15;
+      const extendedHourProgressOffset =
+        circumference - extendedHourProgress * circumference;
+      let extendedHourRotationEnd =
+        extendedHourRotationStart + extendedHourProgress * 360;
+      extendedHourRotationEnd > 360 && (extendedHourRotationEnd -= 360);
 
-    return {
-      size,
-      workingHour: {
-        progressOffset: workingHourProgressOffset,
-        rotationStart: workHourRotationStart,
-        rotationEnd: workHourRotationEnd,
-      },
-      extendedHour: {
-        progressOffset: extendedHourProgressOffset,
-        rotationStart: extendedHourRotationStart,
-        rotationEnd: extendedHourRotationEnd,
-      },
-    };
-  });
+      return {
+        size,
+        workingHour: {
+          progressOffset: workingHourProgressOffset,
+          rotationStart: workHourRotationStart,
+          rotationEnd: workHourRotationEnd,
+        },
+        extendedHour: {
+          progressOffset: extendedHourProgressOffset,
+          rotationStart: extendedHourRotationStart,
+          rotationEnd: extendedHourRotationEnd,
+        },
+      };
+    });
+    return circularInfo;
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const circularInfo = getCitiesCircularInfo();
+      console.log("Selected cities time 1 min passed");
+      setCitiesCircularInfo(circularInfo);
+    }, 1000 * 30); // every min
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View className="w-full mt-4" style={{ height: containerHeight }}>
