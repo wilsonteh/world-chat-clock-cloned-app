@@ -86,7 +86,7 @@ export default function Clock({ cities }: ClockProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       const circularInfo = getCitiesCircularInfo();
-      console.log("Selected cities time 1 min passed");
+      // console.log("Selected cities time 1 min passed");
       setCitiesCircularInfo(circularInfo);
     }, 1000 * 30); // every min
 
