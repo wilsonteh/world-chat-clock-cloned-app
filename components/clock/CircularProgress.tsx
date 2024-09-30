@@ -60,6 +60,7 @@ export default function CircularProgress({
           fill="none"
         />
 
+
         <Circle
           id="circle-extended-hours"
           cx={size / 2}
