@@ -21,7 +21,7 @@ export default function CircularProgress({
   containerHeight: number;
   city: City;
 }) {
-  const SIZE = 150 + 50 * nth; // hardcoded for now, will be a prop passed from parent
+  const SIZE = 100 + 50 * nth; // hardcoded for now, will be a prop passed from parent
   const STROKE_WIDTH = 15;
   const OUTER_STROKE_WIDTH = 0.5;
   const radius = SIZE / 2 - STROKE_WIDTH / 2;
