@@ -1,6 +1,6 @@
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { useEffect, useState } from "react";
-import { Line, Svg } from "react-native-svg";
+import { Circle, Line, Svg } from "react-native-svg";
 
 export default function NowPointer({
   Ncircular,
@@ -15,9 +15,8 @@ export default function NowPointer({
   const [position, setPosition] = useState({
     startX: size / 2,
     startY: size / 2,
-    ...getPointerEndPosition()
+    ...getPointerEndPosition(),
   });
-  console.log("🚀 ~ position:", position)
   
   function getPointerEndPosition() {
     const timeNow = new Date();
@@ -56,6 +55,13 @@ export default function NowPointer({
       ]}
       className="z-10"
     >
+      <Circle 
+        id="center-dot"
+        cx={radius}
+        cy={radius}
+        r={10}
+        fill="white"
+        />
       <Line
         x1={position.startX}
         y1={position.startY}
