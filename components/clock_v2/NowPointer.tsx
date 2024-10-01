@@ -39,15 +39,8 @@ export default function NowPointer({
         { top: containerHeight / 2 - size / 2 },
         { left: screenSize.width / 2 - size / 2 },
       ]}
+      className="z-10"
     >
-      {/* <Line
-        x1={size / 2}
-        y1={size / 2}
-        x2={0}
-        y2={0}
-        stroke="white"
-        strokeWidth={3}
-      /> */}
       <Line
         x1={centerX}
         y1={centerY}
@@ -57,11 +50,5 @@ export default function NowPointer({
         strokeWidth={3}
       />
     </Svg>
-    // <View className="absolute top left-1/2">
-    //   <View
-    //     className="bg-slate-300"
-    //     style={{ width: 3, height: LENGTH }}
-    //   ></View>
-    // </View>
   );
 }
