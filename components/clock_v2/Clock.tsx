@@ -2,6 +2,7 @@ import { cities } from "@/constants/Cities";
 import { View } from "react-native";
 import CircularProgress from "./CircularProgress";
 import NowPointer from "./NowPointer";
+import HourIndicator from "./HourIndicator";
 
 export default function Clock() {
   const CONTAINER_HEIGHT = 350;
@@ -20,6 +21,7 @@ export default function Clock() {
           city={city}
         />
       ))}
+      <HourIndicator Ncircular={cities.length} containerHeight={CONTAINER_HEIGHT} />
     </View>
   );
 }
