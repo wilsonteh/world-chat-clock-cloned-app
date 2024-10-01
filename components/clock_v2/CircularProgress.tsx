@@ -1,7 +1,7 @@
 import { City } from "@/constants/Cities";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
-import { getCurrentTimeFromCity } from "@/utils/Timezone";
-import { View, Text } from "react-native";
+import { getCurrentTimeFromCity, getHourDifferenceFromUser, getTimezoneFromCity, isTimeZoneSame } from "@/utils/Timezone";
+import { View } from "react-native";
 import {
   Circle,
   Svg,
@@ -9,7 +9,6 @@ import {
   TSpan,
   Text as TextSvg,
 } from "react-native-svg";
-import moment from "moment-timezone";
 import React, { useEffect, useState } from "react";
 
 export default function CircularProgress({
@@ -28,16 +27,56 @@ export default function CircularProgress({
   const circumference = 2 * Math.PI * radius;
   const screenSize = useScreenSize();
   const [labelWidth, setLabelWidth] = useState(0);
-  const [currentTime, setCurrentTime] = useState(getCurrentTimeFromCity(city.name));
+  const [currentTime, setCurrentTime] = useState(
+    getCurrentTimeFromCity(city.name)
+  );
+  const [circularInfo, setCircularInfo] = useState(computeCircularProgress());
+  const isTimezoneSame = isTimeZoneSame(city.name);
+
+  function computeCircularProgress() {
+    const totalHours = 24;
+    const timezone = getTimezoneFromCity(city.name);
+    const hourDifference = getHourDifferenceFromUser(timezone);
+
+    // * OFFICE HOUR //
+    const totalOfficeHours = 8;
+    const officeHourDashOffset = circumference - (totalOfficeHours / totalHours) * circumference;
+
+    const startingOfficeHour = isTimezoneSame ? 9 : 9 + hourDifference; 
+    const officeHourRotation = Math.abs((90 - startingOfficeHour * 15) % 360);
+
+    // * STRETCH HOUR //
+    const totalStretchHours = 15.5; 
+    const stretchHourDashOffset = circumference - (totalStretchHours / totalHours) * circumference;
+
+    const startingStretchHour = isTimezoneSame ? 7.5 : 7.5 + hourDifference;
+    const stretchHourRotation = Math.abs((90 - startingStretchHour * 15) % 360);
+
+    return { 
+      officeHours: {
+        strokeDashoffset: officeHourDashOffset, 
+        rotation: officeHourRotation
+      }, 
+      stretchHours: {
+        strokeDashoffset: stretchHourDashOffset, 
+        rotation: stretchHourRotation
+      }
+    };
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
       const time = getCurrentTimeFromCity(city.name);
       setCurrentTime(time);
-    }, 1000);   // update time every min
-    
+    }, 1000 * 60); // update time every min
+
     return () => clearInterval(interval);
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    setCircularInfo(computeCircularProgress());
+    console.log("compute circular progress");
+  }, [currentTime]);
 
   return (
     <View
@@ -51,7 +90,7 @@ export default function CircularProgress({
         width={SIZE + OUTER_STROKE_WIDTH * 2}
         height={SIZE + OUTER_STROKE_WIDTH * 2}
       >
-        <Circle 
+        <Circle
           id="circular-bg"
           cx={SIZE / 2}
           cy={SIZE / 2}
@@ -68,14 +107,16 @@ export default function CircularProgress({
           strokeWidth={STROKE_WIDTH}
           stroke="#4b536a"
           strokeDasharray={circumference}
-          strokeDashoffset={circumference * 0.4}
+          strokeDashoffset={circularInfo.stretchHours.strokeDashoffset}
           strokeLinecap="butt"
-          rotation={-90}
-          origin={`${SIZE / 2 + OUTER_STROKE_WIDTH}, ${SIZE / 2 + OUTER_STROKE_WIDTH}`}
+          rotation={circularInfo.stretchHours.rotation}
+          origin={`${SIZE / 2 + OUTER_STROKE_WIDTH}, ${
+            SIZE / 2 + OUTER_STROKE_WIDTH
+          }`}
         />
 
         <Circle
-          id="circular-working-hours"
+          id="circular-office-hours"
           cx={SIZE / 2 + OUTER_STROKE_WIDTH}
           cy={SIZE / 2 + OUTER_STROKE_WIDTH}
           r={radius}
@@ -83,9 +124,9 @@ export default function CircularProgress({
           strokeWidth={STROKE_WIDTH}
           stroke="#9979fd"
           strokeDasharray={circumference}
-          strokeDashoffset={circumference * 0.7}
+          strokeDashoffset={circularInfo.officeHours.strokeDashoffset}
           strokeLinecap="butt"
-          rotation={-90}
+          rotation={circularInfo.officeHours.rotation}
           origin={`${SIZE / 2}, ${SIZE / 2}`}
         />
 
@@ -119,8 +160,10 @@ export default function CircularProgress({
             startOffset={`${75 - (labelWidth / (2 * circumference)) * 100}%`}
           >
             <TSpan dy={5}>
-              <TSpan fontWeight={300}>{city.name}, {city.country}</TSpan>{" "}
-              <TSpan fontWeight={600}>{currentTime}</TSpan> 
+              <TSpan fontWeight={300}>
+                {city.name}, {city.country}
+              </TSpan>{" "}
+              <TSpan fontWeight={600}>{currentTime}</TSpan>
             </TSpan>
           </TextPath>
         </TextSvg>

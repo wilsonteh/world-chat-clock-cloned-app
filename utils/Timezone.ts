@@ -1,20 +1,39 @@
 import moment from "moment-timezone";
+import * as Localization from "expo-localization";
 
-export function getCurrentTimeFromCity(city: string) {
-  // add '_' for cities with multiple words
+export function getTimezoneFromCity(city: string) {
   city = city.replace(" ", "_");
   const namedTimezones = moment.tz.names();
-  // find the timezone of the city
-  const timezoneName = namedTimezones.find((tz) => tz.includes(city));
+  const found = namedTimezones.find((tz) => tz.includes(city));
+  if (!found) {
+    throw new Error(`Timezone not found for city: ${city}`);
+  }
+  return found;
+}
 
+export function getCurrentTimeFromCity(city: string) {
+  const timezone = getTimezoneFromCity(city);
   const formatter = new Intl.DateTimeFormat([], {
-    timeZone: timezoneName,
+    timeZone: timezone,
     hour: "numeric",
     hour12: true,
     minute: "numeric",
-    second: "numeric",
+    // second: "numeric",
   });
-
-  // get the current time with hh:mm, no date of the city
   return formatter.format(new Date());
+}
+
+export function isTimeZoneSame(city: string) {
+  const userTimezone = Localization.getCalendars()[0].timeZone || "";
+  city = city.replace(" ", "_");
+  return userTimezone.includes(city);
+}
+
+export function getHourDifferenceFromUser(timezone: string) {
+  const userTimezone = Localization.getCalendars()[0].timeZone || "Asia/Kuala_Lumpur";
+  const userCurrentTime = moment.tz(userTimezone);
+  const selectedCityCurrentTime = moment.tz(timezone);
+
+  const hoursDifference = userCurrentTime.utcOffset() - selectedCityCurrentTime.utcOffset();
+  return hoursDifference / 60;
 }

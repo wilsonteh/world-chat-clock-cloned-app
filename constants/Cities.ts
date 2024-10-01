@@ -33,11 +33,11 @@ export interface City {
 }
 
 export const cities = [
+  { name: "Jakarta", country: "Indonesia" },
+  // { name: "Bangkok", country: "Thailand" },
+  // { name: "Tokyo", country: "Japan" },
+  { name: "Seoul", country: "South Korea" },
   { name: "Kuala Lumpur", country: "Malaysia" },
-  // { name: "Jakarta", country: "Indonesia" },
-  { name: "Bangkok", country: "Thailand" },
-  { name: "Tokyo", country: "Japan" },
-  // { name: "Seoul", country: "South Korea" },
   // { name: "Beijing", country: "China" },
   { name: "Sydney", country: "Australia" },
 ]
