@@ -1,5 +1,5 @@
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
-import { View, Text } from "react-native";
+import { useEffect, useState } from "react";
 import { Line, Svg } from "react-native-svg";
 
 export default function NowPointer({
@@ -9,32 +9,47 @@ export default function NowPointer({
   Ncircular: number;
   containerHeight: number;
 }) {
-  // * NOTE nid to calculate dynamically based on radius of the largest circle
   const size = 100 + 50 * Ncircular;
-  // const length = size / 2;
   const screenSize = useScreenSize();
+  const radius = size / 2; 
+  const [position, setPosition] = useState({
+    startX: size / 2,
+    startY: size / 2,
+    ...getPointerEndPosition()
+  });
+  console.log("🚀 ~ position:", position)
+  
+  function getPointerEndPosition() {
+    const timeNow = new Date();
+    const hours = timeNow.getHours();
+    const minutes = timeNow.getMinutes();
+  
+    // Calculate the angle for the current time (360 degrees for 24 hours)
+    const angle = ((hours % 24) / 24 + minutes / 1440) * 360;
+    const angleInRadians = (angle - 90) * (Math.PI / 180); // Subtract 90 to start at the top
+  
+    // Calculate end points for the line based on the angle
+    const endX = radius + radius * Math.cos(angleInRadians);
+    const endY = radius + radius * Math.sin(angleInRadians);
+    return { endX, endY };
+  }
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = size / 2; // Adjust the radius to fit your design
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPosition(prevPosition => ({
+        ...prevPosition, 
+        ...getPointerEndPosition()
+      }))
+    }, 1000 * 60) // update pointer every min
+    
+    return () => clearInterval(interval);
 
-  const timeNow = new Date();
-  const hours = timeNow.getHours();
-  const minutes = timeNow.getMinutes();
-  // const seconds = timeNow.getSeconds();
-  // Calculate the angle for the current time (360 degrees for 24 hours)
-  const angle = ((hours % 24) / 24 + minutes / 1440) * 360;
-  const angleInRadians = (angle - 90) * (Math.PI / 180); // Subtract 90 to start at the top
-
-  // Calculate end points for the line based on the angle
-  const endX = centerX + radius * Math.cos(angleInRadians);
-  const endY = centerY + radius * Math.sin(angleInRadians);
-
+  }, [])
+  
   return (
     <Svg
       width={size}
       height={size}
-      // className="bg-teal-500"
       style={[
         { top: containerHeight / 2 - size / 2 },
         { left: screenSize.width / 2 - size / 2 },
@@ -42,10 +57,10 @@ export default function NowPointer({
       className="z-10"
     >
       <Line
-        x1={centerX}
-        y1={centerY}
-        x2={endX}
-        y2={endY}
+        x1={position.startX}
+        y1={position.startY}
+        x2={position.endX}
+        y2={position.endY}
         stroke="white"
         strokeWidth={3}
       />
