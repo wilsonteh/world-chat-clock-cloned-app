@@ -73,11 +73,6 @@ export default function CircularProgress({
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    setCircularInfo(computeCircularProgress());
-    console.log("compute circular progress");
-  }, [currentTime]);
-
   return (
     <View
       className="absolute"
