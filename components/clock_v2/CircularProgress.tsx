@@ -1,4 +1,4 @@
-import { City } from "@/constants/Cities";
+import { City, COLOR_SEQUENCE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { getCurrentTimeFromCity, getHourDifferenceFromUser, getTimezoneFromCity, isTimeZoneSame } from "@/utils/Timezone";
 import { View } from "react-native";
@@ -122,7 +122,7 @@ export default function CircularProgress({
           r={radius}
           fill="none"
           strokeWidth={STROKE_WIDTH}
-          stroke="#9979fd"
+          stroke={COLOR_SEQUENCE[nth - 1]}
           strokeDasharray={circumference}
           strokeDashoffset={circularInfo.officeHours.strokeDashoffset}
           strokeLinecap="butt"

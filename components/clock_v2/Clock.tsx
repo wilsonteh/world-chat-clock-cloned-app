@@ -1,4 +1,4 @@
-import { cities } from "@/constants/Cities";
+import { cities } from "@/constants/Constants";
 import { View } from "react-native";
 import CircularProgress from "./CircularProgress";
 import NowPointer from "./NowPointer";
