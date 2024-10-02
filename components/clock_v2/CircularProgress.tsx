@@ -37,20 +37,21 @@ export default function CircularProgress({
     const totalHours = 24;
     const timezone = getTimezoneFromCity(city.name);
     const hourDifference = getHourDifferenceFromUser(timezone);
+    // console.log("🚀 hourDifference:", city.name, hourDifference)
 
     // * OFFICE HOUR //
     const totalOfficeHours = 8;
     const officeHourDashOffset = circumference - (totalOfficeHours / totalHours) * circumference;
 
     const startingOfficeHour = isTimezoneSame ? 9 : 9 + hourDifference; 
-    const officeHourRotation = Math.abs((90 - startingOfficeHour * 15) % 360);
+    const officeHourRotation = ((startingOfficeHour - 6) * 360 / 24 + 360) % 360;
 
     // * STRETCH HOUR //
     const totalStretchHours = 15.5; 
     const stretchHourDashOffset = circumference - (totalStretchHours / totalHours) * circumference;
 
     const startingStretchHour = isTimezoneSame ? 7.5 : 7.5 + hourDifference;
-    const stretchHourRotation = Math.abs((90 - startingStretchHour * 15) % 360);
+    const stretchHourRotation = ((startingStretchHour - 6) * 360 / 24 + 360) % 360;
 
     return { 
       officeHours: {
