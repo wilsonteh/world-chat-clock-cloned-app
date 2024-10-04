@@ -1,8 +1,6 @@
 import { CENTER_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
-import { getOverlappedHours, getOverlappingHours } from "@/utils/Utils";
-import moment from "moment-timezone";
-import { useEffect, useState } from "react";
+import { getOverlappedHours } from "@/utils/Utils";
 import { View, Text } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
@@ -25,10 +23,11 @@ export default function CircularOverlap({
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
   const screenSize = useScreenSize();
-  const overlapHourInfo = {
+  const overlapHourInfo: OverlapHourInfo = {
     officeHours: computeOverlappedOfficeHours(),
+    stretchHours: computeOverlappedStretchHours(),
   }
-  // console.log("🚀 ~ overlapHourInfo:", overlapHourInfo)
+  console.log("⚓⚓⚓ overlapHourInfo:", overlapHourInfo)
 
   function returnNoOverlap() {
     console.log("No overlap");
@@ -50,7 +49,7 @@ export default function CircularOverlap({
       .map((start, i) => [start, endRotations[i]])
       .map(([startRot, endRot]) => [startRot / 15 + 6, endRot / 15 + 6]); 
 
-    const overlappedHours = getOverlappingHours(timeRanges);
+    const overlappedHours = getOverlappedHours(timeRanges);
     if (!overlappedHours) return returnNoOverlap();
 
     const [overlappedStartHour, overlappedEndHour] = overlappedHours;
@@ -62,7 +61,35 @@ export default function CircularOverlap({
       rotationStart: overlappedStartRot,
       rotationEnd: overlappedEndRot,
       strokeDashoffset: dashoffset,
-    }
+    } as OverlapHourInfo["officeHours"];
+  }
+
+  function computeOverlappedStretchHours() {
+    const { stretchHour: startRotations } = circularStartRotations;
+    
+    // Find the end rotations
+    const totalStretchHours = 15.5;
+    const endRotations = startRotations.map((rotation) => rotation + totalStretchHours * 15);
+
+    // Convert start & end rotations to time ranges
+    const timeRanges = startRotations
+      .map((start, i) => [start, endRotations[i]])
+      .map(([startRot, endRot]) => [startRot / 15 + 6, endRot / 15 + 6]);
+
+    const overlappedHours = getOverlappedHours(timeRanges);
+    if (!overlappedHours) return returnNoOverlap();
+
+    const [overlappedStartHour, overlappedEndHour] = overlappedHours;
+    const overlappedStartRot = overlappedStartHour * 15 - 90;
+    const overlappedEndRot = overlappedEndHour * 15 - 90;
+    const dashoffset = circumference - ((overlappedEndRot - overlappedStartRot) / 360 * circumference);
+    console.log("💵💵", overlappedStartRot, overlappedEndRot, dashoffset)
+
+    return {
+      rotationStart: overlappedStartRot,
+      rotationEnd: overlappedEndRot,
+      strokeDashoffset: dashoffset,
+    } as OverlapHourInfo["stretchHours"];
   }
 
   return (
@@ -85,13 +112,28 @@ export default function CircularOverlap({
         />
 
         <Circle
+          id="circular-overlap-stretch-hours"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={strokeWidth}
+          fill="none"
+          stroke="#4e8dfa"
+          strokeDasharray={circumference}
+          strokeDashoffset={overlapHourInfo.stretchHours.strokeDashoffset}
+          strokeLinecap="butt"
+          rotation={overlapHourInfo.stretchHours.rotationStart}
+          origin={`${size / 2}, ${size / 2}`}
+        />
+
+        <Circle
           id="circular-overlap-office-hours"
           cx={size / 2}
           cy={size / 2}
           r={radius}
           strokeWidth={strokeWidth}
           fill="none"
-          stroke="red"
+          stroke="#99ccfd"
           strokeDasharray={circumference}
           strokeDashoffset={overlapHourInfo.officeHours.strokeDashoffset}
           strokeLinecap="butt"

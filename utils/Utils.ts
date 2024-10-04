@@ -91,65 +91,71 @@ const ranges = [
   [21, 5],  // 21:00 to 05:00 (crossing midnight)
 ];
 
-export function getOverlappedHours(ranges: [number, number][]) {
-  const modifiedRanges = ranges.map(([start, end]) => start > end ? [start, end+=24] : [start, end]);
-  const overlapStart = Math.max(...modifiedRanges.map(([start, _]) => start));
-  const overlapEnd = Math.min(...modifiedRanges.map(([_, end]) => end));
+export function getOverlappedHours(ranges: number[][]) {
+  const precision = 4; // Quarter hour interval - increase for higher precision
+  const numSlots = 24 * precision; // Total slots in the 24-hour period
+  
+  // Initialize an array for 24 hours, each hour divided into precision intervals
+  let timeSlots = new Array(numSlots).fill(0);
 
+  // Function to convert decimal time into a slot index
+  function timeToSlot(time: number) {
+    return Math.round(time * precision) % numSlots;
+  }
 
-  // return [Math.max(...modifiedRanges.map(([start, _]) => start)), Math.min(...modifiedRanges.map(([_, end]) => end))];
-}
-
-export function getOverlappingHours(ranges: number[][]) {
-  let hours = new Array(24).fill(0);
-
-  // Function to mark hours within a range as active
+  // Function to mark slots for a given range
   function markRange(start: number, end: number) {
-    if (start < end) {
-      // Simple case, no wrapping around midnight
-      for (let i = start; i < end; i++) {
-        hours[i]++;
+    let startSlot = timeToSlot(start);
+    let endSlot = timeToSlot(end);
+
+    // Simple case, no wrapping around midnight
+    if (startSlot < endSlot) {
+      for (let i = startSlot; i < endSlot; i++) {
+        timeSlots[i]++;
       }
-    } else {
-      // Case where range wraps around midnight
-      for (let i = start; i < 24; i++) {
-        hours[i]++;
+    } 
+    // Wrap around midnight
+    else {
+      for (let i = startSlot; i < numSlots; i++) {
+        timeSlots[i]++;
       }
-      for (let i = 0; i < end; i++) {
-        hours[i]++;
+      for (let i = 0; i < endSlot; i++) {
+        timeSlots[i]++;
       }
     }
   }
 
-  // Mark hours for all ranges
+  // Mark the time slots for each range
   ranges.forEach(([start, end]) => markRange(start, end));
-  // Number of ranges to compare against
-  const numRanges = ranges.length;
 
-  // Find the overlap
+  const totalItems = ranges.length;
   let overlapStart = null;
   let overlapEnd = null;
   let inOverlap = false;
 
-  for (let i = 0; i < 24; i++) {
-    if (hours[i] === numRanges) {
-      // Start the overlap period if not already inside one
+  // Find overlap in time slots
+  for (let i = 0; i < numSlots; i++) {
+    if (timeSlots[i] === totalItems) {
       if (!inOverlap) {
         overlapStart = i;
         inOverlap = true;
       }
       overlapEnd = i;
-    } else if (inOverlap) {
-      // End the overlap when we leave a common range
+    } 
+    else if (inOverlap) {
+      // Exit the overlap block when we leave it
       break;
     }
   }
 
-  // If no overlap was found
+  // If no overlap is found
   if (overlapStart === null || overlapEnd === null) {
-    return null; // No overlap exists
+    return null; // No overlap
   }
 
-  // Return the inclusive overlap range
-  return [overlapStart, (overlapEnd + 1) % 24]; 
+  // Convert slots back to decimal time
+  const startHour = (overlapStart / precision).toFixed(2);
+  const endHour = ((overlapEnd + 1) / precision).toFixed(2);
+
+  return [parseFloat(startHour), parseFloat(endHour)]; 
 }

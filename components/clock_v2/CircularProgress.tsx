@@ -24,7 +24,7 @@ export default function CircularProgress({
 }) {
   const SIZE = CENTER_CIRCLE_SIZE + 50 * nth; 
   const STROKE_WIDTH = 15;
-  const OUTER_STROKE_WIDTH = 0.5;
+  const OUTER_STROKE_WIDTH = 0.3;
   const radius = SIZE / 2 - STROKE_WIDTH / 2;
   const circumference = 2 * Math.PI * radius;
   const screenSize = useScreenSize();
@@ -32,14 +32,13 @@ export default function CircularProgress({
   const [currentTime, setCurrentTime] = useState(
     getCurrentTimeFromCity(city.name)
   );
-  const [circularInfo, setCircularInfo] = useState(computeCircularProgress());
+  const circularInfo = computeCircularProgress();
   const isTimezoneSame = isTimeZoneSame(city.name);
 
   function computeCircularProgress() {
     const totalHours = 24;
     const timezone = getTimezoneFromCity(city.name);
     const hourDifference = getHourDifferenceFromUser(timezone);
-    // console.log("🚀 hourDifference:", city.name, hourDifference)
 
     // * OFFICE HOUR //
     const totalOfficeHours = 8;
@@ -54,7 +53,6 @@ export default function CircularProgress({
 
     const startingStretchHour = isTimezoneSame ? 7.5 : 7.5 + hourDifference;
     const stretchHourRotation = (startingStretchHour - 6) * 360 / 24;
-
     
     return { 
       officeHours: {
@@ -108,7 +106,6 @@ export default function CircularProgress({
           fill="none"
           strokeWidth={STROKE_WIDTH}
           stroke="#4b536a"
-          // stroke="grey"
           strokeDasharray={circumference}
           strokeDashoffset={circularInfo.stretchHours.strokeDashoffset}
           strokeLinecap="butt"
@@ -140,8 +137,9 @@ export default function CircularProgress({
           r={radius + STROKE_WIDTH / 2}
           fill="none"
           strokeWidth={OUTER_STROKE_WIDTH}
-          stroke="#fff"
-        />
+          // stroke="#fff"
+          stroke="none"
+          />
 
         <Circle
           id="circular-bg-stroke-inner"
@@ -150,7 +148,8 @@ export default function CircularProgress({
           r={radius - STROKE_WIDTH / 2}
           fill="none"
           strokeWidth={OUTER_STROKE_WIDTH}
-          stroke="#fff"
+          // stroke="#fff"
+          stroke="none"
         />
 
         <TextSvg
