@@ -4,11 +4,11 @@ export interface City {
 }
 
 export const cities = [
-  // { name: "Jakarta", country: "Indonesia" },
+  { name: "Jakarta", country: "Indonesia" },
   // { name: "Bangkok", country: "Thailand" },
-  { name: "Tokyo", country: "Japan" },
+  // { name: "Tokyo", country: "Japan" },
   { name: "Seoul", country: "South Korea" },
-  // { name: "Kuala Lumpur", country: "Malaysia" },
+  { name: "Kuala Lumpur", country: "Malaysia" },
   // { name: "Shanghai", country: "China" },
   { name: "Sydney", country: "Australia" },
   // { name: "Dubai", country: "UAE"}, 
@@ -22,4 +22,5 @@ export const cities = [
 ];
 
 export const CENTER_CIRCLE_SIZE = 50;
+export const LARGEST_CIRCLE_SIZE = 250;
 export const COLOR_SEQUENCE = ["#9778ff", "#ffb81b", "#25e294", "#fa6f6f", "#ffd70d"];

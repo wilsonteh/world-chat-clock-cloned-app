@@ -1,4 +1,4 @@
-import { CENTER_CIRCLE_SIZE } from "@/constants/Constants";
+import { CENTER_CIRCLE_SIZE, LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 
@@ -48,7 +48,7 @@ export default function HourIndicator({
   Ncircular: number;
   containerHeight: number;
 }) {
-  const size = CENTER_CIRCLE_SIZE + 50 * Ncircular;
+  const size = LARGEST_CIRCLE_SIZE;
   const screenSize = useScreenSize();
   const radius = size / 2 + 15;
   const center = { x: radius - 7.5, y: radius - 7.5  };

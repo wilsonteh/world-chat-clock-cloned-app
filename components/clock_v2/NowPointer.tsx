@@ -1,4 +1,4 @@
-import { CENTER_CIRCLE_SIZE } from "@/constants/Constants";
+import { CENTER_CIRCLE_SIZE, LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { useEffect, useState } from "react";
 import { Circle, Line, Svg } from "react-native-svg";
@@ -10,7 +10,7 @@ export default function NowPointer({
   Ncircular: number;
   containerHeight: number;
 }) {
-  const size = CENTER_CIRCLE_SIZE + 50 * Ncircular;
+  const size = LARGEST_CIRCLE_SIZE + 60;
   const screenSize = useScreenSize();
   const radius = size / 2; 
   const [position, setPosition] = useState({

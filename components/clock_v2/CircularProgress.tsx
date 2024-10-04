@@ -1,4 +1,4 @@
-import { CENTER_CIRCLE_SIZE, City, COLOR_SEQUENCE } from "@/constants/Constants";
+import { CENTER_CIRCLE_SIZE, City, COLOR_SEQUENCE, LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { getCurrentTimeFromCity, getHourDifferenceFromUser, getTimezoneFromCity, isTimeZoneSame } from "@/utils/Timezone";
 import { View } from "react-native";
@@ -22,9 +22,9 @@ export default function CircularProgress({
   city: City; 
   updateRotations: (newItem: number, type: "office" | "stretch") => void;
 }) {
-  const SIZE = CENTER_CIRCLE_SIZE + 50 * nth; 
+  const SIZE = LARGEST_CIRCLE_SIZE - (50 * (nth-1)); 
   const STROKE_WIDTH = 15;
-  const OUTER_STROKE_WIDTH = 0.3;
+  const OUTER_STROKE_WIDTH = 0.2;
   const radius = SIZE / 2 - STROKE_WIDTH / 2;
   const circumference = 2 * Math.PI * radius;
   const screenSize = useScreenSize();

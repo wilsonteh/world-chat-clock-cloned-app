@@ -1,4 +1,4 @@
-import { CENTER_CIRCLE_SIZE } from "@/constants/Constants";
+import { CENTER_CIRCLE_SIZE, LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { getOverlappedHours } from "@/utils/Utils";
 import { View, Text } from "react-native";
@@ -18,7 +18,7 @@ export default function CircularOverlap({
   Ncircular: number;  
   circularStartRotations: {officeHour: number[]; stretchHour: number[]};
 }) {
-  const size = CENTER_CIRCLE_SIZE + 50 * Ncircular + 80;
+  const size = LARGEST_CIRCLE_SIZE + 70;
   const strokeWidth = 10;
   const radius = size / 2 - strokeWidth / 2;
   const circumference = 2 * Math.PI * radius;
@@ -27,7 +27,7 @@ export default function CircularOverlap({
     officeHours: computeOverlappedOfficeHours(),
     stretchHours: computeOverlappedStretchHours(),
   }
-  console.log("⚓⚓⚓ overlapHourInfo:", overlapHourInfo)
+  // console.log("⚓⚓⚓ overlapHourInfo:", overlapHourInfo)
 
   function returnNoOverlap() {
     console.log("No overlap");
@@ -83,7 +83,7 @@ export default function CircularOverlap({
     const overlappedStartRot = overlappedStartHour * 15 - 90;
     const overlappedEndRot = overlappedEndHour * 15 - 90;
     const dashoffset = circumference - ((overlappedEndRot - overlappedStartRot) / 360 * circumference);
-    console.log("💵💵", overlappedStartRot, overlappedEndRot, dashoffset)
+    // console.log("💵💵", overlappedStartRot, overlappedEndRot, dashoffset)
 
     return {
       rotationStart: overlappedStartRot,
