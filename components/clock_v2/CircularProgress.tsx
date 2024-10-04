@@ -1,4 +1,4 @@
-import { City, COLOR_SEQUENCE } from "@/constants/Constants";
+import { CENTER_CIRCLE_SIZE, City, COLOR_SEQUENCE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { getCurrentTimeFromCity, getHourDifferenceFromUser, getTimezoneFromCity, isTimeZoneSame } from "@/utils/Timezone";
 import { View } from "react-native";
@@ -15,12 +15,14 @@ export default function CircularProgress({
   nth,
   containerHeight,
   city,
+  updateRotations,
 }: {
   nth: number;
   containerHeight: number;
-  city: City;
+  city: City; 
+  updateRotations: (newItem: number, type: "office" | "stretch") => void;
 }) {
-  const SIZE = 100 + 50 * nth; // hardcoded for now, will be a prop passed from parent
+  const SIZE = CENTER_CIRCLE_SIZE + 50 * nth; 
   const STROKE_WIDTH = 15;
   const OUTER_STROKE_WIDTH = 0.5;
   const radius = SIZE / 2 - STROKE_WIDTH / 2;
@@ -44,15 +46,16 @@ export default function CircularProgress({
     const officeHourDashOffset = circumference - (totalOfficeHours / totalHours) * circumference;
 
     const startingOfficeHour = isTimezoneSame ? 9 : 9 + hourDifference; 
-    const officeHourRotation = ((startingOfficeHour - 6) * 360 / 24 + 360) % 360;
+    const officeHourRotation = (startingOfficeHour - 6) * 360 / 24;
 
     // * STRETCH HOUR //
     const totalStretchHours = 15.5; 
     const stretchHourDashOffset = circumference - (totalStretchHours / totalHours) * circumference;
 
     const startingStretchHour = isTimezoneSame ? 7.5 : 7.5 + hourDifference;
-    const stretchHourRotation = ((startingStretchHour - 6) * 360 / 24 + 360) % 360;
+    const stretchHourRotation = (startingStretchHour - 6) * 360 / 24;
 
+    
     return { 
       officeHours: {
         strokeDashoffset: officeHourDashOffset, 
@@ -66,6 +69,9 @@ export default function CircularProgress({
   }
 
   useEffect(() => {
+    updateRotations(circularInfo.officeHours.rotation, "office");
+    updateRotations(circularInfo.stretchHours.rotation, "stretch");
+
     const interval = setInterval(() => {
       const time = getCurrentTimeFromCity(city.name);
       setCurrentTime(time);
@@ -102,6 +108,7 @@ export default function CircularProgress({
           fill="none"
           strokeWidth={STROKE_WIDTH}
           stroke="#4b536a"
+          // stroke="grey"
           strokeDasharray={circumference}
           strokeDashoffset={circularInfo.stretchHours.strokeDashoffset}
           strokeLinecap="butt"

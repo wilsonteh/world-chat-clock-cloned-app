@@ -84,3 +84,72 @@ export const getTotalHoursBetweenTimes = (
 //     cityCurrentTime: cityTime,
 //   };
 // };
+
+const ranges = [
+  [15, 23], // 15:00 to 23:00
+  [16, 24], // 16:00 to 24:00 (midnight)
+  [21, 5],  // 21:00 to 05:00 (crossing midnight)
+];
+
+export function getOverlappedHours(ranges: [number, number][]) {
+  const modifiedRanges = ranges.map(([start, end]) => start > end ? [start, end+=24] : [start, end]);
+  const overlapStart = Math.max(...modifiedRanges.map(([start, _]) => start));
+  const overlapEnd = Math.min(...modifiedRanges.map(([_, end]) => end));
+
+
+  // return [Math.max(...modifiedRanges.map(([start, _]) => start)), Math.min(...modifiedRanges.map(([_, end]) => end))];
+}
+
+export function getOverlappingHours(ranges: number[][]) {
+  let hours = new Array(24).fill(0);
+
+  // Function to mark hours within a range as active
+  function markRange(start: number, end: number) {
+    if (start < end) {
+      // Simple case, no wrapping around midnight
+      for (let i = start; i < end; i++) {
+        hours[i]++;
+      }
+    } else {
+      // Case where range wraps around midnight
+      for (let i = start; i < 24; i++) {
+        hours[i]++;
+      }
+      for (let i = 0; i < end; i++) {
+        hours[i]++;
+      }
+    }
+  }
+
+  // Mark hours for all ranges
+  ranges.forEach(([start, end]) => markRange(start, end));
+  // Number of ranges to compare against
+  const numRanges = ranges.length;
+
+  // Find the overlap
+  let overlapStart = null;
+  let overlapEnd = null;
+  let inOverlap = false;
+
+  for (let i = 0; i < 24; i++) {
+    if (hours[i] === numRanges) {
+      // Start the overlap period if not already inside one
+      if (!inOverlap) {
+        overlapStart = i;
+        inOverlap = true;
+      }
+      overlapEnd = i;
+    } else if (inOverlap) {
+      // End the overlap when we leave a common range
+      break;
+    }
+  }
+
+  // If no overlap was found
+  if (overlapStart === null || overlapEnd === null) {
+    return null; // No overlap exists
+  }
+
+  // Return the inclusive overlap range
+  return [overlapStart, (overlapEnd + 1) % 24]; 
+}

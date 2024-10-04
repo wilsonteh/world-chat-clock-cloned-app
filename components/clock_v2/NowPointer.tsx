@@ -1,3 +1,4 @@
+import { CENTER_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { useEffect, useState } from "react";
 import { Circle, Line, Svg } from "react-native-svg";
@@ -9,7 +10,7 @@ export default function NowPointer({
   Ncircular: number;
   containerHeight: number;
 }) {
-  const size = 100 + 50 * Ncircular;
+  const size = CENTER_CIRCLE_SIZE + 50 * Ncircular;
   const screenSize = useScreenSize();
   const radius = size / 2; 
   const [position, setPosition] = useState({
@@ -39,6 +40,7 @@ export default function NowPointer({
         ...prevPosition, 
         ...getPointerEndPosition()
       }))
+      console.log("Updating pointer position every min")
     }, 1000 * 60) // update pointer every min
     
     return () => clearInterval(interval);
