@@ -7,7 +7,7 @@ export const cities = [
   { name: "Jakarta", country: "Indonesia" },
   // { name: "Bangkok", country: "Thailand" },
   // { name: "Tokyo", country: "Japan" },
-  { name: "Seoul", country: "South Korea" },
+  // { name: "Seoul", country: "South Korea" },
   { name: "Kuala Lumpur", country: "Malaysia" },
   // { name: "Shanghai", country: "China" },
   { name: "Sydney", country: "Australia" },
