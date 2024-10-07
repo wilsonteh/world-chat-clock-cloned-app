@@ -43,7 +43,7 @@ export default function Clock() {
           nth={i + 1}
           containerHeight={CONTAINER_HEIGHT}
           city={city}
-          updateRotations={updateStartRotations}
+          onUpdateRotations={updateStartRotations}
         />
       ))}
       <CircularOverlap

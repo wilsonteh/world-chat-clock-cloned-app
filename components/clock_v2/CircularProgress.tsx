@@ -15,12 +15,12 @@ export default function CircularProgress({
   nth,
   containerHeight,
   city,
-  updateRotations,
+  onUpdateRotations,
 }: {
   nth: number;
   containerHeight: number;
   city: City; 
-  updateRotations: (newItem: number, type: "office" | "stretch") => void;
+  onUpdateRotations: (newItem: number, type: "office" | "stretch") => void;
 }) {
   const SIZE = LARGEST_CIRCLE_SIZE - (50 * (nth-1)); 
   const STROKE_WIDTH = 15;
@@ -67,8 +67,8 @@ export default function CircularProgress({
   }
 
   useEffect(() => {
-    updateRotations(circularInfo.officeHours.rotation, "office");
-    updateRotations(circularInfo.stretchHours.rotation, "stretch");
+    onUpdateRotations(circularInfo.officeHours.rotation, "office");
+    onUpdateRotations(circularInfo.stretchHours.rotation, "stretch");
 
     const interval = setInterval(() => {
       const time = getCurrentTimeFromCity(city.name);
