@@ -1,12 +1,14 @@
+import CityList from "@/components/CityList";
 import Clock from "@/components/clock_v2/Clock";
 import React from "react";
-import { View, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
 
   return (
-    <View className=" bg-[#242936] flex-1">
+    <SafeAreaView className=" bg-[#242936] flex-1">
       <Clock />
-    </View>
+      <CityList />
+    </SafeAreaView>
   );
 }
