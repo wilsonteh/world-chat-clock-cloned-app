@@ -11,13 +11,6 @@ export default function RootLayout() {
     <ScreenSizeProvider>
       <Stack>
         <Stack.Screen name="index" options={{ title: "Home" }} />
-        <Stack.Screen
-          name="citiesSelectionModal"
-          options={{
-            presentation: "modal",
-            title: "Select Cities",
-          }}
-        />
       </Stack>
     </ScreenSizeProvider>
   );
