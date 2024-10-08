@@ -17,7 +17,6 @@ export default function ClockLegend() {
           <Text className="text-white text-xs">{item.label}</Text>
         </View>
       ))}
-      
     </View>
   );
 }
