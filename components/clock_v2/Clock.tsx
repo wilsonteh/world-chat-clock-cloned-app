@@ -36,10 +36,7 @@ export default function Clock({
   };
 
   return (
-    <View
-      className="border border-teal-500"
-      style={{ height: CONTAINER_HEIGHT }}
-    >
+    <View style={{ height: CONTAINER_HEIGHT }}>
       <NowPointer
         Ncircular={cities.length}
         containerHeight={CONTAINER_HEIGHT}

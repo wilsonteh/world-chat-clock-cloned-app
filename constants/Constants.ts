@@ -4,16 +4,16 @@ export interface City {
 }
 
 export const cities = [
-  { name: "Jakarta", country: "Indonesia" },
+  // { name: "Jakarta", country: "Indonesia" },
   // { name: "Bangkok", country: "Thailand" },
-  // { name: "Tokyo", country: "Japan" },
+  { name: "Tokyo", country: "Japan" },
   // { name: "Seoul", country: "South Korea" },
-  { name: "Kuala Lumpur", country: "Malaysia" },
+  // { name: "Kuala Lumpur", country: "Malaysia" },
   // { name: "Shanghai", country: "China" },
-  { name: "Sydney", country: "Australia" },
+  // { name: "Sydney", country: "Australia" },
   // { name: "Dubai", country: "UAE"}, 
-  // { name: "Berlin", country: "Germany"}, 
-  // { name: "Madrid", country: "Spain"}, 
+  { name: "Berlin", country: "Germany"}, 
+  { name: "Madrid", country: "Spain"}, 
   // { name: "London", country: "UK"}, 
   // { name: "Vancouver", country: "Canada"}, 
   // { name: "New York", country: "USA" },
