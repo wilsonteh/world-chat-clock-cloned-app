@@ -2,7 +2,7 @@ import { CENTER_CIRCLE_SIZE, cities, LARGEST_CIRCLE_SIZE } from "@/constants/Con
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
 import { getHourFromAngle } from "@/utils/Utils";
 import { useEffect, useState } from "react";
-import { GestureResponderEvent, PanResponder, PanResponderGestureState, View } from "react-native";
+import { GestureResponderEvent, PanResponder, PanResponderGestureState, Pressable, View, Text } from "react-native";
 import { Circle, Line, Svg } from "react-native-svg";
 
 export default function NowPointer({
@@ -22,6 +22,7 @@ export default function NowPointer({
     startY: size / 2,
     ...getPointerEndPosition(),
   });
+  const [hasPointerMoved, setHasPointerMoved] = useState(false);
   
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -38,6 +39,7 @@ export default function NowPointer({
   })
 
   function handlePointerInteraction(e: GestureResponderEvent, gestureState: PanResponderGestureState) {
+    setHasPointerMoved(true);
     const { locationX, locationY } = e.nativeEvent;
     // console.log("locationX, locationY", locationX, locationY);
     // console.log("🚀 🚀 🚀 gestureState:", gestureState)
@@ -70,13 +72,25 @@ export default function NowPointer({
     return { endX, endY };
   }
 
+  function resetPointerPosition() {
+    console.log("reset pointer position");
+    setHasPointerMoved(false);
+    setPosition(prevPosition => ({
+      ...prevPosition,
+      ...getPointerEndPosition(),
+    }));
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setPosition(prevPosition => ({
-        ...prevPosition, 
-        ...getPointerEndPosition()
-      }))
-      console.log("Updating pointer position every min")
+      if (!hasPointerMoved) {
+        // Only change the pointer position if it hasn't been moved by the user
+        setPosition(prevPosition => ({
+          ...prevPosition, 
+          ...getPointerEndPosition()
+        }))
+        console.log("Updating pointer position every min")
+      }
     }, 1000 * 60) // update pointer every min
     
     return () => clearInterval(interval);
@@ -89,17 +103,15 @@ export default function NowPointer({
         width={size}
         height={size}
         style={[
-          // { backgroundColor: "red" },
           { top: containerHeight / 2 - size / 2 },
           { left: screenSize.width / 2 - size / 2 },
         ]}
       >
-        <Circle id="center-dot" cx={radius} cy={radius} r={10} fill="white" />
+        { !hasPointerMoved && <Circle id="center-dot" cx={radius} cy={radius} r={10} fill="white" /> }
+        { hasPointerMoved && <Circle id="reset-icon-circle" cx={radius} cy={radius} r={20} fill="#1e6ff2" onPress={resetPointerPosition} /> }
         <Line
           x1={position.startX}
           y1={position.startY}
-          // x2={0}
-          // y2={0}
           x2={position.endX}
           y2={position.endY}
           stroke="white"
