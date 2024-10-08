@@ -79,6 +79,13 @@ export default function NowPointer({
       ...prevPosition,
       ...getPointerEndPosition(),
     }));
+
+    const timeNow = new Date();
+    const hours = timeNow.getHours();
+    const minutes = timeNow.getMinutes();
+    const angle = ((hours % 24) / 24 + minutes / 1440) * 360 - 90;
+    onPointerMove(angle);
+
   }
 
   useEffect(() => {

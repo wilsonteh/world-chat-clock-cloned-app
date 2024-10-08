@@ -17,9 +17,8 @@ export default function Index() {
     })
   );
 
-  const displayTimeOnPointerMove = (angle: number) => {
+  const handlePointerMove = (angle: number) => {
     const hour = getHourFromAngle(angle);
-
     const results = cities.map(city => {
       const timezone = getTimezoneFromCity(city.name);
       const hourDiff = getHourDifferenceFromUser(timezone);
@@ -33,7 +32,7 @@ export default function Index() {
   
   return (
     <SafeAreaView className=" bg-[#242936] flex-1">
-      <Clock onPointerMove={displayTimeOnPointerMove} />
+      <Clock onPointerMove={handlePointerMove} />
       <CityList cities={cityItems} />
     </SafeAreaView>
   );
