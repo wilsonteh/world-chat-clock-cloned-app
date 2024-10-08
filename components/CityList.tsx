@@ -1,12 +1,14 @@
 import { View } from "react-native";
-import CityItem from "./CityItem";
+import CityItem, { CityItemType } from "./CityItem";
+import { City } from "@/constants/Constants";
 
-export default function CityList() {
+
+export default function CityList({ cities }: { cities: CityItemType[] }) {
   return (
     <View className="flex mt-2">
-      <CityItem />  
-      <CityItem />  
-      <CityItem />  
+      { cities.map((city, i) => (
+        <CityItem key={i} city={city}  />  
+      ))}
     </View>
   );
 }

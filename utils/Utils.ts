@@ -76,22 +76,7 @@ export const getTotalHoursBetweenTimes = (
   return hours;
 };
 
-// export const getCityTimezoneInfo = (gmtOffset: string) => {
-//   const cityNamedTimezone = moment.tz.guess();
-//   const cityTime = moment().tz(cityNamedTimezone).format("YYYY-MM-DD HH:mm:ss");
-//   return {
-//     cityNamedTimezone,
-//     cityCurrentTime: cityTime,
-//   };
-// };
-
-const ranges = [
-  [15, 23], // 15:00 to 23:00
-  [16, 24], // 16:00 to 24:00 (midnight)
-  [21, 5],  // 21:00 to 05:00 (crossing midnight)
-];
-
-export function getOverlappedHours(ranges: number[][]) {
+export const getOverlappedHours = (ranges: number[][]) => {
   const precision = 4; // Quarter hour interval - increase for higher precision
   const numSlots = 24 * precision; // Total slots in the 24-hour period
   
@@ -158,4 +143,16 @@ export function getOverlappedHours(ranges: number[][]) {
   const endHour = ((overlapEnd + 1) / precision).toFixed(2);
 
   return [parseFloat(startHour), parseFloat(endHour)]; 
+};
+
+export const getHourFromAngle = (angle: number) => {
+  const hour = (angle / 15 + 6) % 24;
+  return hour;
+};
+
+export const getTimeStringFromHour = (hour: number) => {
+  // `hour` is in decimal format (e.g., 6.5 for 6:30 AM)
+  const wholeHour = Math.floor(hour);
+  const minutes = (hour - wholeHour) * 60;
+  return moment().hour(wholeHour).minute(minutes).format("hh:mm A");
 }

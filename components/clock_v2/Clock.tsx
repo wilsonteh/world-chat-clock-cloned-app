@@ -1,12 +1,19 @@
 import { cities } from "@/constants/Constants";
-import { View } from "react-native";
+import { GestureResponderEvent, View } from "react-native";
 import CircularProgress from "./CircularProgress";
 import NowPointer from "./NowPointer";
 import HourIndicator from "./HourIndicator";
 import CircularOverlap from "./CircularOverlap";
 import { useState } from "react";
+import { getCurrentTimeFromCity, getHourDifferenceFromUser, getTimezoneFromCity } from "@/utils/Timezone";
+import { getHourFromAngle } from "@/utils/Utils";
 
-export default function Clock() {
+  
+export default function Clock({ 
+  onPointerMove 
+} : { 
+  onPointerMove: (angle: number) => void; 
+}) {
   const CONTAINER_HEIGHT = 350;
   const [startRotations, setStartRotations] = useState<{
     officeHour: number[];
@@ -30,12 +37,13 @@ export default function Clock() {
 
   return (
     <View
-      className="border border-red-500"
+      className="border border-teal-500"
       style={{ height: CONTAINER_HEIGHT }}
     >
       <NowPointer
         Ncircular={cities.length}
         containerHeight={CONTAINER_HEIGHT}
+        onPointerMove={onPointerMove}
       />
       {cities.map((city, i) => (
         <CircularProgress
