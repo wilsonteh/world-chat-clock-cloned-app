@@ -1,83 +1,116 @@
-import { CENTER_CIRCLE_SIZE, cities, LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
+import { LARGEST_CIRCLE_SIZE } from "@/constants/Constants";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
-import { getHourFromAngle } from "@/utils/Utils";
-import { useEffect, useState } from "react";
-import { GestureResponderEvent, PanResponder, PanResponderGestureState, Pressable, View, Text } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  GestureResponderEvent,
+  PanResponder,
+  PanResponderGestureState,
+  View,
+  Animated,
+  Easing,
+  Text,
+} from "react-native";
 import { Circle, Line, Svg } from "react-native-svg";
 
 export default function NowPointer({
-  Ncircular,
   containerHeight,
-  onPointerMove, 
+  onPointerMove,
 }: {
-  Ncircular: number;
   containerHeight: number;
   onPointerMove: (angle: number) => void;
 }) {
   const size = LARGEST_CIRCLE_SIZE + 60;
   const screenSize = useScreenSize();
-  const radius = size / 2; 
-  const [position, setPosition] = useState({
+  const radius = size / 2;
+  const [currentTimePosition, setPosition] = useState({
     startX: size / 2,
     startY: size / 2,
-    ...getPointerEndPosition(),
+    ...getPointerPositionByCurrentTime(),
   });
+  // console.log(currentTimePosition);
   const [hasPointerMoved, setHasPointerMoved] = useState(false);
-  
+  const animationValue = useRef(new Animated.Value(0)).current;
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant(e, gestureState) {
       // When user click anywhere within the clock
       // console.log("👆👆 onPanResponderGrant");
-      handlePointerInteraction(e, gestureState);
+      handlePointerInteraction(e);
     },
     onPanResponderMove: (e, gestureState) => {
       // When user drags the pointer
       // console.log("💧💧 onPanResponderMove");
-      handlePointerInteraction(e, gestureState);
-    }, 
-  })
+      handlePointerInteraction(e);
+    },
+  });
 
-  function handlePointerInteraction(e: GestureResponderEvent, gestureState: PanResponderGestureState) {
+  const rotatePointer = (toValue: number) => {
+    console.log("🕧 rotate animation");
+    Animated.timing(animationValue, {
+      toValue,
+      duration: 1000,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const interpolatedRotation = animationValue.interpolate({
+    inputRange: [0, 360],
+    outputRange: ["0deg", "360deg"],
+  });
+  // interpolated rotation always 1 step behind
+  // console.log("💧💧💧 rotated deg", interpolatedRotation)
+
+  function handlePointerInteraction(e: GestureResponderEvent) {
     setHasPointerMoved(true);
     const { locationX, locationY } = e.nativeEvent;
-    // console.log("locationX, locationY", locationX, locationY);
-    // console.log("🚀 🚀 🚀 gestureState:", gestureState)
-    const dx = locationX - position.startX;
-    const dy = locationY - position.startY;
-    let pointerAngle = Math.atan2(dy, dx) * 180 / Math.PI;
-    // to adjust negative angle (becoz atan2 returns angle from -180 to 180)
-    if (pointerAngle < 0) {
-      pointerAngle = 360 + pointerAngle;
+    console.log("🚀 location", locationX, locationY);
+    const dx = locationX - currentTimePosition.startX;
+    const dy = locationY - currentTimePosition.startY;
+    let newPointerAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+    // Adiust negative angle (coz atan2 returns angle from -179.99 to 179.99)
+    if (newPointerAngle < 0) {
+      newPointerAngle += 360;
     }
-    const pointerAngleRadian = (pointerAngle) * (Math.PI / 180);
-    const endX = radius + radius * Math.cos(pointerAngleRadian);
-    const endY = radius + radius * Math.sin(pointerAngleRadian);
-    setPosition(prevPosition => ({ ...prevPosition, endX, endY }));   
-    onPointerMove(pointerAngle);
+    // *FIXME - new pointer angle is wrong
+    console.log("🚀🚀🚀 pointerAngle:", newPointerAngle);
+    // const newPointerAngleRadian = newPointerAngle * (Math.PI / 180);
+    // const endX = radius + radius * Math.cos(newPointerAngleRadian);
+    // const endY = radius + radius * Math.sin(newPointerAngleRadian);
+
+    // Get the angle to be rotated on the pointer to the new position
+    rotatePointer(newPointerAngle - currentTimePosition.angle);
+    // Don't alter the value for endX & endY when the pointer is being moved
+    // Use the rotate css to control the pointer movement
+    setPosition((prevPosition) => ({
+      ...prevPosition,
+      angle: newPointerAngle,
+    }));
+    onPointerMove(newPointerAngle);
   }
 
-  function getPointerEndPosition() {
+  function getPointerPositionByCurrentTime() {
     const timeNow = new Date();
     const hours = timeNow.getHours();
     const minutes = timeNow.getMinutes();
-  
+
     // Calculate the angle for the current time (360 degrees for 24 hours)
-    const angle = ((hours % 24) / 24 + minutes / 1440) * 360;
-    const angleInRadians = (angle - 90) * (Math.PI / 180); // Subtract 90 to start at the top
-  
-    // Calculate end points for the line based on the angle
+    const angle = ((hours % 24) / 24 + minutes / 1440) * 360 - 90;
+    const angleInRadians = angle * (Math.PI / 180); // Subtract 90 to start at the top
+
+    // Calculate end points for the pointer based on the angle
     const endX = radius + radius * Math.cos(angleInRadians);
     const endY = radius + radius * Math.sin(angleInRadians);
-    return { endX, endY };
+    return { endX, endY, angle };
   }
 
   function resetPointerPosition() {
     console.log("reset pointer position");
     setHasPointerMoved(false);
-    setPosition(prevPosition => ({
+    setPosition((prevPosition) => ({
       ...prevPosition,
-      ...getPointerEndPosition(),
+      ...getPointerPositionByCurrentTime(),
     }));
 
     const timeNow = new Date();
@@ -85,46 +118,76 @@ export default function NowPointer({
     const minutes = timeNow.getMinutes();
     const angle = ((hours % 24) / 24 + minutes / 1440) * 360 - 90;
     onPointerMove(angle);
-
+    // Reset rotate back to 0, so the pointer end position will follow endX & endY
+    rotatePointer(0);
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!hasPointerMoved) {
         // Only change the pointer position if it hasn't been moved by the user
-        setPosition(prevPosition => ({
-          ...prevPosition, 
-          ...getPointerEndPosition()
-        }))
-        console.log("Updating pointer position every min")
+        setPosition((prevPosition) => ({
+          ...prevPosition,
+          ...getPointerPositionByCurrentTime(),
+        }));
+        console.log("Updating pointer position every min");
       }
-    }, 1000 * 60) // update pointer every min
-    
-    return () => clearInterval(interval);
+    }, 1000 * 60); // update pointer every min
 
-  }, [])
-  
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <View className="z-10" {...panResponder.panHandlers}>
-      <Svg
-        width={size}
-        height={size}
-        style={[
-          { top: containerHeight / 2 - size / 2 },
-          { left: screenSize.width / 2 - size / 2 },
-        ]}
+    <View>
+      <View
+        className="z-10 absolute"
+        style={{
+          top: containerHeight / 2 - size / 2,
+          left: screenSize.width / 2 - size / 2,
+          // backgroundColor: "teal",
+        }}
+        {...panResponder.panHandlers}
       >
-        { !hasPointerMoved && <Circle id="center-dot" cx={radius} cy={radius} r={10} fill="white" /> }
-        { hasPointerMoved && <Circle id="reset-icon-circle" cx={radius} cy={radius} r={20} fill="#1e6ff2" onPress={resetPointerPosition} /> }
-        <Line
-          x1={position.startX}
-          y1={position.startY}
-          x2={position.endX}
-          y2={position.endY}
-          stroke="white"
-          strokeWidth={3}
-        />
-      </Svg>
+        <Animated.View
+          style={{
+            // position: "absolute",
+            width: size,
+            height: size,
+            transform: [{ rotate: interpolatedRotation }],
+            backgroundColor: "transparent",
+          }}
+        >
+          <Svg width={size} height={size}>
+            {!hasPointerMoved && (
+              <Circle
+                id="center-dot"
+                cx={radius}
+                cy={radius}
+                r={10}
+                fill="white"
+              />
+            )}
+            {hasPointerMoved && (
+              <Circle
+                id="reset-icon-circle"
+                cx={radius}
+                cy={radius}
+                r={20}
+                fill="#1e6ff2"
+                onPress={resetPointerPosition}
+              />
+            )}
+            <Line
+              x1={currentTimePosition.startX}
+              y1={currentTimePosition.startY}
+              x2={currentTimePosition.endX}
+              y2={currentTimePosition.endY}
+              stroke="white"
+              strokeWidth={3}
+            />
+          </Svg>
+        </Animated.View>
+      </View>
     </View>
   );
 }
