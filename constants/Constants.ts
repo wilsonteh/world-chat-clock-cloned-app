@@ -13,7 +13,7 @@ export const cities = [
   { name: "Sydney", country: "Australia" },
   // { name: "Dubai", country: "UAE"}, 
   // { name: "Berlin", country: "Germany"}, 
-  // { name: "Madrid", country: "Spain"}, 
+  { name: "Madrid", country: "Spain"}, 
   // { name: "London", country: "UK"}, 
   // { name: "Vancouver", country: "Canada"}, 
   // { name: "New York", country: "USA" },

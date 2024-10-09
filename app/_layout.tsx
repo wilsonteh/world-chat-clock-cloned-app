@@ -10,7 +10,7 @@ export default function RootLayout() {
   return (
     <ScreenSizeProvider>
       <Stack>
-        <Stack.Screen name="index" options={{ title: "Home" }} />
+        <Stack.Screen name="index" options={{ title: "Home", headerShown: false }} />
       </Stack>
     </ScreenSizeProvider>
   );
