@@ -8,7 +8,6 @@ import {
   View,
   Animated,
   Easing,
-  Text,
 } from "react-native";
 import { Circle, Line, Svg } from "react-native-svg";
 
@@ -35,37 +34,54 @@ export default function NowPointer({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant(e, gestureState) {
       // When user click anywhere within the clock
-      // console.log("👆👆 onPanResponderGrant");
       handlePointerInteraction(e);
     },
     onPanResponderMove: (e, gestureState) => {
       // When user drags the pointer
-      // console.log("💧💧 onPanResponderMove");
       handlePointerInteraction(e);
     },
   });
 
-  const rotatePointer = (toValue: number) => {
-    console.log("🕧 rotate animation");
-    Animated.timing(animationValue, {
-      toValue,
-      duration: 1000,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-  };
+  // const rotatePointer = (newAngle: number) => {
+  //   console.log("🚀 newAngle:", newAngle, "oldAngle", currentTimePosition.angle)
+  //   let toValue = 0;
+    
+  //   if (newAngle > currentTimePosition.angle) {
+  //     console.log("1")
+  //     toValue = newAngle - currentTimePosition.angle;
+  //   } else if (newAngle < currentTimePosition.angle) {
+  //     console.log("2")
+  //     toValue = 360 - currentTimePosition.angle + newAngle;
+  //   }
+  //   console.log("❌❌❌ toValue:", toValue)
+
+  //   Animated.timing(animationValue, {
+  //     toValue,
+  //     duration: 1000,
+  //     easing: Easing.inOut(Easing.ease),
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
 
   const interpolatedRotation = animationValue.interpolate({
     inputRange: [0, 360],
     outputRange: ["0deg", "360deg"],
   });
-  // interpolated rotation always 1 step behind
-  // console.log("💧💧💧 rotated deg", interpolatedRotation)
+  
+  // useEffect(() => {
+  //   const listenerId  = animationValue.addListener(({ value }) => {
+  //     // console.log("💧💧 rotated deg", value);
+  //   });
+
+  //   return () => interpolatedRotation.removeListener(listenerId);
+
+  // }, [interpolatedRotation]); 
+  
 
   function handlePointerInteraction(e: GestureResponderEvent) {
     setHasPointerMoved(true);
     const { locationX, locationY } = e.nativeEvent;
-    console.log("🚀 location", locationX, locationY);
+    console.log("🌍🌍🌍 location", locationX, locationY);
     const dx = locationX - currentTimePosition.startX;
     const dy = locationY - currentTimePosition.startY;
     let newPointerAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
@@ -73,18 +89,20 @@ export default function NowPointer({
     if (newPointerAngle < 0) {
       newPointerAngle += 360;
     }
-    // *FIXME - new pointer angle is wrong
-    console.log("🚀🚀🚀 pointerAngle:", newPointerAngle);
-    // const newPointerAngleRadian = newPointerAngle * (Math.PI / 180);
-    // const endX = radius + radius * Math.cos(newPointerAngleRadian);
-    // const endY = radius + radius * Math.sin(newPointerAngleRadian);
+    // console.log("🚀🚀🚀 newPointerAngle:", newPointerAngle);
+    const newPointerAngleRadian = newPointerAngle * (Math.PI / 180);
+    const endX = radius + radius * Math.cos(newPointerAngleRadian);
+    const endY = radius + radius * Math.sin(newPointerAngleRadian);
 
     // Get the angle to be rotated on the pointer to the new position
-    rotatePointer(newPointerAngle - currentTimePosition.angle);
+    // rotatePointer(newPointerAngle);
+
     // Don't alter the value for endX & endY when the pointer is being moved
     // Use the rotate css to control the pointer movement
     setPosition((prevPosition) => ({
       ...prevPosition,
+      endX, 
+      endY,
       angle: newPointerAngle,
     }));
     onPointerMove(newPointerAngle);
@@ -119,7 +137,7 @@ export default function NowPointer({
     const angle = ((hours % 24) / 24 + minutes / 1440) * 360 - 90;
     onPointerMove(angle);
     // Reset rotate back to 0, so the pointer end position will follow endX & endY
-    rotatePointer(0);
+    // rotatePointer(0);
   }
 
   useEffect(() => {
@@ -154,7 +172,7 @@ export default function NowPointer({
             width: size,
             height: size,
             transform: [{ rotate: interpolatedRotation }],
-            backgroundColor: "transparent",
+            // backgroundColor: "red",
           }}
         >
           <Svg width={size} height={size}>
